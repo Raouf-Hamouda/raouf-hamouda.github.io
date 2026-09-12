@@ -1029,3 +1029,22 @@
     if (body) body.scrollTop = 0;
   }).observe(sheet, { attributes: true, attributeFilter: ['class'] });
 })();
+
+/* ============================================================
+   LEGAL PANEL, CLOSE FROM THE BOTTOM
+   ============================================================ */
+(function () {
+  'use strict';
+  var close = document.querySelector('.legal-close');
+  var toggle = document.querySelector('.legal-toggle');
+  var panel = document.getElementById('legal-panel');
+  var sheet = document.getElementById('sheet-info');
+  if (!close || !toggle || !panel || !sheet) return;
+  close.addEventListener('click', function () {
+    panel.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    var body = sheet.querySelector('.sheet__body');
+    if (body) body.scrollTo({ top: 0, behavior: 'smooth' });
+    toggle.focus({ preventScroll: true });
+  });
+})();

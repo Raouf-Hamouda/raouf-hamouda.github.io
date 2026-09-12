@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#ffffff}
+canvas{display:block;width:100%!important;height:100%!important}
+#loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(0,0,0,0.35);font-family:monospace;font-size:12px;letter-spacing:2px;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="loading">loading...</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+var modelPath = new URLSearchParams(location.search).get('m');
+if (!modelPath) { document.getElementById('loading').textContent = 'no model'; }
+
+var renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
+
+var scene = new THREE.Scene();
+scene.background = new THREE.Color(0xffffff);
+
+var camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.001, 2000);
+camera.position.set(0, 1, 4);
+
+scene.add(new THREE.AmbientLight(0xffffff, 2.5));
+var d1 = new THREE.DirectionalLight(0xffffff, 3); d1.position.set(5, 10, 7); scene.add(d1);
+var d2 = new THREE.DirectionalLight(0x8899ff, 1); d2.position.set(-5, -2, -4); scene.add(d2);
+
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.7;
+
+if (modelPath) {
+  var dracoLoader = new THREE.DRACOLoader();
+  dracoLoader.setDecoderPath('draco/');
+
+  var loader = new THREE.GLTFLoader();
+  loader.setDRACOLoader(dracoLoader);
+
+  loader.load(modelPath, function(gltf) {
+    document.getElementById('loading').style.display = 'none';
+    var model = gltf.scene;
+    var box = new THREE.Box3().setFromObject(model);
+    var center = new THREE.Vector3(); box.getCenter(center);
+    var size = new THREE.Vector3(); box.getSize(size);
+    var s = 2.2 / Math.max(size.x, size.y, size.z);
+    model.position.sub(center);
+    var g = new THREE.Group(); g.scale.setScalar(s); g.add(model); scene.add(g);
+    camera.position.set(0, 0.4, 3.5);
+    controls.target.set(0, 0, 0);
+    controls.update();
+  }, undefined, function(e){ document.getElementById('loading').textContent = 'error: ' + (e.message || e.type || 'load failed'); });
+}
+
+window.addEventListener('resize', function() {
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+});
+
+(function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); })();
+</script>
+</body>
+</html>

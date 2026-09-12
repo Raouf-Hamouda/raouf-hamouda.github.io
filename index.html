@@ -1,0 +1,1779 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Raouf Hamouda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Make sure any mixed content gets upgraded on HTTPS -->
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="icon" href="favicon/favicon.ico">
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css?v=202609121253" />
+  <!-- Code highlight -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- GLB prefetch, desktop only: a phone would pay ~30 MB for models it may never open -->
+  <script>
+    if (window.matchMedia("(min-width:900px)").matches) {
+      ["projects/the-last-one/model1-draco.glb", "projects/the-last-one/model2-draco.glb", "projects/the-last-one/model3-draco.glb", "projects/the-last-one/model4-draco.glb", "projects/the-last-one/viewer.html"].forEach(function (f) {
+        var l = document.createElement("link"); l.rel = "prefetch"; l.href = f;
+        document.head.appendChild(l);
+      });
+    }
+  </script>
+</head>
+<body>
+  <main class="stage">
+    <!-- Canvas -->
+    <canvas id="trail-canvas" aria-hidden="true"></canvas>
+
+    <!-- Hint -->
+    <div id="onboardingHint" class="onboarding-hint" aria-live="polite" aria-hidden="true">
+      Press &amp; drag
+    </div>
+
+    <!-- Logo -->
+    <div class="logo-container" aria-hidden="true">
+      <img src="Asset 1.png" alt="" class="logo" />
+    </div>
+
+    <!-- NAV HORIZONTALE -->
+    <nav class="topnav" id="topnav" aria-label="Sections">
+      <a href="#" class="topnav-item" data-open-panel="sheet-art">Art Interractive</a>
+      <a href="#" class="topnav-item" data-open-panel="sheet-installation">Installation</a>
+      <a href="#" class="topnav-item" data-open-panel="sheet-epsaa">EPSAA</a>
+      <a href="#" class="topnav-item" data-open-panel="sheet-web">Web</a>
+      <a href="#" class="topnav-item" data-open-panel="sheet-info">About</a>
+    </nav>
+
+    <!-- PHONE MENU BUTTON + PANEL -->
+    <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+    <nav id="mobileMenu" class="mobile-menu" aria-label="Mobile menu" aria-hidden="true">
+      <a href="#" class="mobile-menu-item" data-open-panel="sheet-art">Art Interractive</a>
+      <a href="#" class="mobile-menu-item" data-open-panel="sheet-installation">Installation</a>
+      <a href="#" class="mobile-menu-item" data-open-panel="sheet-info">About</a>
+      <a href="#" class="mobile-menu-item" data-open-panel="sheet-epsaa">EPSAA</a>
+      <a href="#" class="mobile-menu-item" data-open-panel="sheet-web">Web</a>
+    </nav>
+
+    <!-- Légendes coin -->
+    <p class="corner-text is-visible" data-caption-default>
+     Le texte s'inverse selon le fond.
+    </p>
+    <p class="corner-text" data-caption-for="das.jpg">Sandbox 2023struggle entre structure et désordre.</p>
+    <p class="corner-text" data-caption-for="las.jpg">FACES 2022/2023dualité de l'être.</p>
+    <p class="corner-text" data-caption-for="(y).jpg">Eternals 12024</p>
+    <p class="corner-text" data-caption-for="meds.jpg">Trichokinesis2022</p>
+    <p class="corner-text" data-caption-for="wa.jpg">Makers Of The Game2023</p>
+    <p class="corner-text" data-caption-for="a.jpg">Sundress2024</p>
+    <p class="corner-text" data-caption-for="b.jpg">頭MAJOR HEADACHE痛—›2023</p>
+    <p class="corner-text" data-caption-for="c.jpg">Lucid Dream2024</p>
+    <p class="corner-text" data-caption-for="d.jpg">La Diva 12022</p>
+    <p class="corner-text" data-caption-for="x1.jpg">BAGARE Pour Bolard2025</p>
+    <p class="corner-text" data-caption-for="g.jpg">Vision pro2024</p>
+    <p class="corner-text" data-caption-for="f.jpg">The Very Good Work Place 12022</p>
+    <p class="corner-text" data-caption-for="a copy.jpg">Perdre Les Données Puis La Tête2025</p>
+    <p class="corner-text" data-caption-for="u.jpg">Eternals 22024</p>
+    <p class="corner-text" data-caption-for="mona lisa by leo.jpg">If It Was A Magazine Mouna2024</p>
+    <p class="corner-text" data-caption-for="bmw.jpg">If It Was A Magazine BMW2024</p>
+    <p class="corner-text" data-caption-for="xs.jpg">Flex 12023</p>
+    <p class="corner-text" data-caption-for="bv.png">We Love Earrings2025</p>
+    <p class="corner-text" data-caption-for="fex.jpg">Fex2023</p>
+    <p class="corner-text" data-caption-for="vd.jpg">Usd2022</p>
+    <p class="corner-text" data-caption-for="dark.jpg">Wierd Night 12023</p>
+    <p class="corner-text" data-caption-for="still missing her.jpg">x2022/2023</p>
+    <p class="corner-text" data-caption-for="00.jpg">I ain't Going Out Now2023</p>
+    <p class="corner-text" data-caption-for="da34.jpg">La Diva 22022</p>
+    <p class="corner-text" data-caption-for="dada.jpg">Wierd Night 22023</p>
+
+    <!-- SHEET : ART -->
+    <section class="sheet" id="sheet-art" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="sheet-art-title">
+      <header class="sheet__header">
+        <div class="sheet__grabber" aria-hidden="true"></div>
+        <h2 id="sheet-art-title">Art Interractive</h2>
+        <button class="sheet__close" data-close-panel aria-label="Fermer">✕</button>
+      </header>
+      <div class="sheet__body">
+        <div class="poster poster--narrow">
+          <div class="poster__caption">
+            <div class="cap-title">Substitution</div>
+            <div class="muted">Projet WebGLThree.js / MediaPipe</div>
+          </div>
+        </div>
+
+        <div class="embed-wrap embed-hide-ui">
+          <!-- CodePen embed -->
+          <p class="codepen"
+             data-height="600"
+             data-default-tab="result"
+             data-slug-hash="WbQdBjm"
+             data-user="raouf-hamouda">
+            <span>See the Pen <a href="https://codepen.io/raouf-hamouda/pen/WbQdBjm">Pen</a> by raouf-hamouda on <a href="https://codepen.io">CodePen</a>.</span>
+          </p>
+        </div>
+
+        <article class="install-text">
+          <h2>Instructions d'interaction</h2>
+          <h3> → Activer la caméra à l'aide du bouton ☰ <br>
+→ Placez la caméra de l'appareil à environ 40 cm de vous.<br>
+→ Pincer avec les deux mains<h3><br>
+          <h4>Pincer + écarter les mains → Zoom out<br>
+          Pincer + rapprocher les mains → Zoom in<br>
+          Pincer + mains vers le haut → Rotation ↑<br>
+          Pincer + mains vers le bas → Rotation ↓<br>
+          Pincer + main droite ↑/↓  → Rotation horizontale<br><h4>
+        </article>
+      </div>
+    </section>
+
+    <!-- SHEET : INSTALLATION -->
+    <section class="sheet" id="sheet-installation" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="sheet-installation-title">
+      <header class="sheet__header">
+        <div class="sheet__grabber" aria-hidden="true"></div>
+        <h2 id="sheet-installation-title">Installation</h2>
+        <button class="sheet__close" data-close-panel aria-label="Fermer">✕</button>
+      </header>
+      <div class="sheet__body">
+        <div class="poster">
+          <div class="poster__frame">
+            <img class="poster__image" src="first of the year  2.jpg" alt="L'Irréversibleescalier et miroir" loading="lazy" />
+          </div>
+          <div class="poster__caption">
+            <div class="cap-title">L'Irréversible - dxdydz</div>
+            <div>MDF peint en blanc, miroir <span class="muted">(espace scénographique)</span></div>
+            <div>5 × 3 × 2,8 m</div>
+            <div>2025</div>
+            <div class="cap-venue">LA BOÎTE ART &amp; ARCHITECTURE</div>
+          </div>
+        </div>
+
+
+<div class="pf-embed-container">
+          <h3>Prototype interactif</h3>
+          <p>Explorez l'installation en 3D sur itch.io.</p>
+          <a href="https://itch.io/embed-upload/15518584?color=333333" target="_blank" rel="noopener" class="pf-itch-button">
+            ▶ Jouer sur itch.io
+          </a>
+        </div>
+
+        <article class="install-text">
+          <p>Inspirée par la seconde loi de la thermodynamique, l'installation évoque l'irréversibilité de la vie.</p>
+          <ul class="tight">
+            <li>Chaque action est irréversible.</li>
+            <li>La routine du quotidien.</li>
+          </ul>
+          <p> </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- SHEET : EPSAA -->
+    <section class="sheet" id="sheet-epsaa" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="sheet-epsaa-title">
+      <header class="sheet__header">
+        <div class="sheet__grabber" aria-hidden="true"></div>
+        <h2 id="sheet-epsaa-title">EPSAA</h2>
+        <button class="sheet__close" data-close-panel aria-label="Fermer">✕</button>
+      </header>
+      <div class="sheet__body">
+        
+        <!-- ========== PROJECT CARDS ========== -->
+        <div class="pf-projects-section">
+          <div class="pf-projects-grid">
+            
+            <!-- Project Card 1: TouchDesigner -->
+            <article class="pf-project-card" data-modal="pf-modal-1">
+              <div class="pf-project-number">01</div>
+              <h3 class="pf-project-title">TouchDesigner</h3>
+              <p class="pf-project-description">
+                Projet interactif développé en collaboration avec Simon Chestnut. Installation pilotée par les gestes de la main.
+              </p>
+              <div class="pf-project-tech">
+                <span>TouchDesigner</span>
+                <span>Interactif</span>
+              </div>
+            </article>
+
+            <!-- Project Card 2: Sound Design -->
+            <article class="pf-project-card" data-modal="pf-modal-2">
+              <div class="pf-project-number">02</div>
+              <h3 class="pf-project-title">Sound Design</h3>
+              <p class="pf-project-description">
+                Composition sonore explorant le passage de la mélancolie à l'euphorie. Co-création avec Vincent Monti.
+              </p>
+              <div class="pf-project-tech">
+                <span>Sound Design</span>
+                <span>Ableton</span>
+              </div>
+            </article>
+
+            <!-- Project Card 3: Motion -->
+            <article class="pf-project-card" data-modal="pf-modal-3">
+              <div class="pf-project-number">03</div>
+              <h3 class="pf-project-title">Motion</h3>
+              <p class="pf-project-description">
+                Signalétique lumineuse pour dalle LED et conversion vidéo en ASCII. Exploration graphique.
+              </p>
+              <div class="pf-project-tech">
+                <span>After Effects</span>
+                <span>LED</span>
+              </div>
+            </article>
+
+            <!-- Project Card 4: Nikon Fest -->
+            <article class="pf-project-card" data-modal="pf-modal-4">
+              <div class="pf-project-number">04</div>
+              <h3 class="pf-project-title">Le Département de la Beauté</h3>
+              <p class="pf-project-description">
+                Court métrage philosophique sur la création humaine. Dialogue théâtral entre deux créateurs divins.
+              </p>
+              <div class="pf-project-tech">
+                <span>Cinéma</span>
+                <span>TouchDesigner</span>
+                <span>Nikon Fest</span>
+              </div>
+            </article>
+
+            <!-- Project Card 5: UX/UI Design -->
+            <article class="pf-project-card" data-modal="pf-modal-5">
+              <div class="pf-project-number">05</div>
+              <h3 class="pf-project-title">UX / UI Design</h3>
+              <p class="pf-project-description">
+                Application web minimaliste intégrant APIs météo et IA. Interface contextuelle et adaptative.
+              </p>
+              <div class="pf-project-tech">
+                <span>Figma</span>
+                <span>PHP</span>
+                <span>APIs</span>
+              </div>
+            </article>
+
+            <!-- Project Card 6: Blender/Unity -->
+            <article class="pf-project-card" data-modal="pf-modal-6">
+              <div class="pf-project-number">06</div>
+              <h3 class="pf-project-title">Blender / Unity</h3>
+              <p class="pf-project-description">
+                Prototype de jeu de skate libre. Environnement modulaire et gameplay exploratoire.
+              </p>
+              <div class="pf-project-tech">
+                <span>Blender</span>
+                <span>Unity</span>
+                <span>C#</span>
+              </div>
+            </article>
+
+            <!-- Project Card 7: JPO -->
+            <article class="pf-project-card" data-modal="pf-modal-7">
+              <div class="pf-project-number">07</div>
+              <h3 class="pf-project-title">JPO</h3>
+              <p class="pf-project-description">
+                Installation interactive IAun cyborg dans une bibliothèque infinie qui converse avec les visiteurs.
+              </p>
+              <div class="pf-project-tech">
+                <span>Unity</span>
+                <span>Llama 3.3</span>
+                <span>TouchDesigner</span>
+                <span>Collaboration</span>
+              </div>
+            </article>
+
+            <!-- Project Card 7.1: TouchDesigner Depth Map -->
+            <article class="pf-project-card" data-modal="pf-modal-71">
+              <div class="pf-project-number">07.1</div>
+              <h3 class="pf-project-title">TouchDesignerDepth Map</h3>
+              <p class="pf-project-description">
+                Génération de cartes de profondeur à partir d'images, converties en formes 3D via Python et TouchDesigner.
+              </p>
+              <div class="pf-project-tech">
+                <span>TouchDesigner</span>
+                <span>Python</span>
+                <span>Depth Map</span>
+                <span>3D</span>
+              </div>
+            </article>
+
+            <!-- Project Card 8: Exploitation Personnelle -->
+            <article class="pf-project-card" data-modal="pf-modal-8">
+              <div class="pf-project-number">08</div>
+              <h3 class="pf-project-title">Exploitation Personnelle</h3>
+              <p class="pf-project-description">
+                50+ animations FBX combinées avec JavaScriptscène de combat cinématographique rendue dans le navigateur.
+              </p>
+              <div class="pf-project-tech">
+                <span>Three.js</span>
+                <span>JavaScript</span>
+                <span>FBX</span>
+                <span>Animation</span>
+              </div>
+            </article>
+
+            <!-- Project Card 9: Who's the NPC -->
+            <article class="pf-project-card" data-modal="pf-modal-9">
+              <div class="pf-project-number">09</div>
+              <h3 class="pf-project-title">Who's the NPC?</h3>
+              <p class="pf-project-description">
+                5 entités IA indépendantes dans un espace 5x5m. Elles pensent via appels API, ignorent qu'elles sont des IA. Phase 2 : infiltration en casque VR.
+              </p>
+              <div class="pf-project-tech">
+                <span>Gemini / Groq</span>
+                <span>JavaScript</span>
+                <span>VR</span>
+              </div>
+            </article>
+
+            <!-- Project Card 10: Music? It's In The Hands -->
+            <article class="pf-project-card" data-modal="pf-modal-10">
+              <div class="pf-project-number">10</div>
+              <h3 class="pf-project-title">Music? It's In The Hands</h3>
+              <p class="pf-project-description">
+                Table de mixage DJ pilotée par les gestes des mains. MediaPipe + Web Audio. Créé pour la soirée technique EPSAA.
+              </p>
+              <div class="pf-project-tech">
+                <span>MediaPipe</span>
+                <span>Web Audio API</span>
+                <span>GSAP</span>
+              </div>
+            </article>
+
+            <!-- Project Card 11: The Last One -->
+            <article class="pf-project-card" data-modal="pf-modal-11">
+              <div class="pf-project-number">11</div>
+              <h3 class="pf-project-title">The Last One</h3>
+              <p class="pf-project-description">
+                Expérience VR narrative. Fin de l'humanité, guerre IA / humains. Le dernier humain atterrit sur une planète habitable et rencontre une entité pensante supérieure.
+              </p>
+              <div class="pf-project-tech">
+                <span>VR</span>
+                <span>Three.js</span>
+                <span>GLB / Draco</span>
+              </div>
+            </article>
+
+          </div>
+        </div>
+        <!-- ========== END PROJECT CARDS ========== -->
+
+      </div>
+    </section>
+
+    <!-- SHEET : INFO  -->
+    <section class="sheet" id="sheet-web" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="sheet-web-title">
+      <header class="sheet__header">
+        <div class="sheet__grabber" aria-hidden="true"></div>
+        <h2 id="sheet-web-title">Web</h2>
+        <button class="sheet__close" data-close-panel aria-label="Fermer">✕</button>
+      </header>
+      <div class="sheet__body">
+        <div class="web-intro">
+          <p>Sites conçus, écrits et mis en ligne. Chaque vignette joue le site en vrai. Cliquez pour l'ouvrir.</p>
+        </div>
+        <div class="web-grid">
+            <a class="web-work" href="https://instinct.paris/" target="_blank" rel="noopener">
+              <div class="web-screen">
+                <video class="web-desk" data-src="web/v/instinct_desk.mp4" poster="web/p/instinct_desk.jpg" muted loop playsinline preload="none"></video>
+              </div>
+              <div class="web-meta">
+                <h3>Instinct Paris</h3>
+                <span>2026 · en ligne</span>
+                <p>Label de realisateurs. Site et salle de projection privee.</p>
+              </div>
+            </a>
+            <a class="web-work" href="https://raouf-hamouda.github.io/ivresse-damour/" target="_blank" rel="noopener">
+              <div class="web-screen">
+                <video class="web-desk" data-src="web/v/ivresse_desk.mp4" poster="web/p/ivresse_desk.jpg" muted loop playsinline preload="none"></video>
+              </div>
+              <div class="web-meta">
+                <h3>Ivresse d'Amour</h3>
+                <span>2026 · en ligne</span>
+                <p>Mezcal de Villa Sola de Vega. Site de marque et de vente.</p>
+              </div>
+            </a>
+            <a class="web-work" href="https://raouf-hamouda.github.io/adverse-production/" target="_blank" rel="noopener">
+              <div class="web-screen">
+                <video class="web-desk" data-src="web/v/adverse_desk.mp4" poster="web/p/adverse_desk.jpg" muted loop playsinline preload="none"></video>
+              <div class="web-phone"><video data-src="web/v/adverse_phone.mp4" poster="web/p/adverse_phone.jpg" muted loop playsinline preload="none"></video></div>
+              </div>
+              <div class="web-meta">
+                <h3>Adverse Production</h3>
+                <span>2026 · en ligne</span>
+                <p>Maison de production et agence, Paris. Animation du logo et portfolio.</p>
+              </div>
+            </a>
+            <a class="web-work" href="https://raouf-png.github.io/eddy-illustration/" target="_blank" rel="noopener">
+              <div class="web-screen">
+                <video class="web-desk" data-src="web/v/eddy_desk.mp4" poster="web/p/eddy_desk.jpg" muted loop playsinline preload="none"></video>
+              <div class="web-phone"><video data-src="web/v/eddy_phone.mp4" poster="web/p/eddy_phone.jpg" muted loop playsinline preload="none"></video></div>
+              </div>
+              <div class="web-meta">
+                <h3>Eddy Illustration</h3>
+                <span>2026 · en ligne</span>
+                <p>Maison d'illustration et d'animation du groupe Eddy. Deck d'artistes.</p>
+              </div>
+            </a>
+            <a class="web-work" href="https://raouf-hamouda.github.io/vivance-art/" target="_blank" rel="noopener">
+              <div class="web-screen">
+                <video class="web-desk" data-src="web/v/vivance_desk.mp4" poster="web/p/vivance_desk.jpg" muted loop playsinline preload="none"></video>
+              </div>
+              <div class="web-meta">
+                <h3>Vivance Art</h3>
+                <span>2026 · en ligne</span>
+                <p>Galerie d'art contemporain latino-americain, Paris. Site et boutique.</p>
+              </div>
+            </a>
+            <a class="web-work" href="https://raouf-hamouda.github.io/alaya-fine-jewelry/" target="_blank" rel="noopener">
+              <div class="web-screen">
+                <video class="web-desk" data-src="web/v/alaya_desk.mp4" poster="web/p/alaya_desk.jpg" muted loop playsinline preload="none"></video>
+              </div>
+              <div class="web-meta">
+                <h3>Alaya Fine Jewelry</h3>
+                <span>2026 · en ligne</span>
+                <p>Maison de joaillerie. Catalogue et pages produit.</p>
+              </div>
+            </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet" id="sheet-info" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="sheet-info-title">
+      <header class="sheet__header">
+        <div class="sheet__grabber" aria-hidden="true"></div>
+        <h2 id="sheet-info-title">About</h2>
+        <button class="sheet__close" data-close-panel aria-label="Fermer">✕</button>
+      </header>
+      <div class="sheet__body contact-body">
+        <div class="contact-bio">
+          <p>Raouf Hamouda (né en 1999, Tunisie) est un artiste visuel et designer graphique vivant entre Paris et Tunis. Formé en sciences physiques avant de s'orienter vers le marketing et le design. Il développe une pratique visuelle nourrie par l'observation et la construction d'images. Il explore le collage digital, la photographie et s'intéresse actuellement aux formes d'art interactif.</p>
+        </div>
+        <a href="https://www.instagram.com/iamraoufhamouda/" target="_blank" rel="noopener" class="contact-link">Instagram</a>
+        <a href="/cdn-cgi/l/email-protection#0775666872616f6a6a687263663647606a666e6b2964686a" class="contact-link">Email</a>
+        <div class="contact-logo">
+          <img src="Asset%202.png" alt="Logo" class="contact-logo-img" loading="lazy" />
+        </div>
+
+        <button class="legal-toggle" type="button" aria-expanded="false" aria-controls="legal-panel">
+          Mentions légales
+        </button>
+
+        <div class="legal-panel" id="legal-panel" hidden>
+          <h3>Cadre artistique</h3>
+          <p>Tous les travaux présentés sur ce site sont des œuvres et des expérimentations, réalisées dans le cadre de projets artistiques et d'études, notamment au sein du post-diplôme Digital Media de l'EPSAA. Les prototypes interactifs, les installations, les jeux et les pièces sonores sont montrés ici à titre de recherche et de documentation. Ce site ne vend rien et ne distribue aucune application. Si l'un de ces projets devient un produit ou un service, il aura ses propres conditions, indépendantes de ce site.</p>
+
+          <h3>Éditeur</h3>
+          <p>Raouf Hamouda, artiste visuel et designer graphique. Site personnel publié à titre non professionnel, sans publicité, sans affiliation et sans vente en ligne. Contact par le lien Email ci-dessus.</p>
+
+          <h3>Hébergeur</h3>
+          <p>GitHub Pages, service de GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis. github.com</p>
+
+          <h3>Propriété intellectuelle</h3>
+          <p>Les images, vidéos, textes, modèles 3D et codes présentés sont la propriété de leur auteur. Toute reproduction, diffusion ou réutilisation, même partielle, demande une autorisation écrite préalable.</p>
+
+          <h3>Œuvres, marques et références citées</h3>
+          <p>Certains projets citent des œuvres, des films, des musiques ou des marques à titre de référence et d'illustration de la démarche. Les droits restent à leurs titulaires respectifs. Toute demande de retrait sera traitée sans délai par email.</p>
+
+          <h3>Personnes filmées</h3>
+          <p>Les documents montrant des personnes sont diffusés dans ce seul cadre artistique. Toute personne qui souhaite le retrait d'une image la concernant peut le demander par email.</p>
+
+          <h3>Données et cookies</h3>
+          <p>Ce site ne collecte aucune donnée personnelle, n'utilise ni formulaire ni mesure d'audience. Les contenus intégrés depuis YouTube, Figma et CodePen peuvent déposer leurs propres cookies au moment où vous ouvrez le projet concerné.</p>
+
+          <p class="legal-law">Mentions publiées au titre de l'article 6 III de la loi du 21 juin 2004 pour la confiance dans l'économie numérique.</p>
+
+          <p class="legal-badge"><span>Projets réalisés dans le cadre de projets artistiques</span></p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== PROJECT MODALS ========== -->
+  
+  <!-- Modal 1: TouchDesigner -->
+  <div id="pf-modal-1" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">01</div>
+        <h2 class="pf-modal-title">TouchDesigner</h2>
+        <p class="pf-modal-collab">Simon Chestnut</p>
+        <div class="pf-modal-details">
+          
+          <h3>Contexte général et démarche</h3>
+          <p>Ce travail explore la relation entre le corps, le son et l'image à travers des systèmes interactifs en temps réel. L'enjeu central est d'interroger la manière dont des gestes simples parfois presque inconscients peuvent générer des formes visuelles.</p>
+          <p>L'art interactif constitue un axe majeur de cette recherche, car il établit une connexion directe entre l'humain et l'œuvre. Le spectateur ne se limite plus à observer : il agit, influence et transforme. TouchDesigner occupe une place centrale dans cette pratique, permettant de connecter différentes sources de données et de les convertir en expériences visuelles organiques et immersives.</p>
+
+          <!-- ===== SABER LIGHT ===== -->
+          <h3>Saber Light</h3>
+          
+          <h4>Inspiration</h4>
+          <p><em>Saber Light</em> est né d'une fascination pour le film <em>Guardians of the Galaxy</em>, et plus particulièrement pour le personnage de Yondu Udonta. Ce qui a immédiatement retenu l'attention, c'est la manière dont le son contrôle la flèche, et comment le mouvement génère une tension visuelle particulièrement forte. La sensation de contrôler une forme lumineuse par le geste constitue le point de départ de ce projet.</p>
+          
+          <figure class="pf-modal-media">
+            <video poster="posters/touch_inspi_saber.jpg" class="pf-modal-video" src="touch/inspi%20saber.mp4" controls preload="none" playsinline muted loop></video>
+            <figcaption>Référence visuelleYondu, Guardians of the Galaxy</figcaption>
+          </figure>
+
+          <h4>Processus et interaction</h4>
+          <p>Le système a été développé en HTML, JavaScript et CSS, avec MediaPipe intégré à TouchDesigner. Le dispositif repose sur le suivi des gestes de la main, en particulier le mouvement du bout des doigts.</p>
+          <p>Dans TouchDesigner, un pattern d'interaction sonore a été construit : le son influence directement les variations de couleur, tandis que le mouvement de la main contrôle la direction, la vitesse et l'intensité de la forme lumineuse. Le projet fonctionne comme un dialogue entre le corps et la machine.</p>
+          
+          <figure class="pf-modal-media">
+            <video poster="posters/touch_saber_light.jpg" class="pf-modal-video" src="touch/saber%20light.mp4" controls preload="none" playsinline></video>
+            <figcaption>Saber LightDémonstration du système interactif</figcaption>
+          </figure>
+
+          <!-- ===== 1214 ===== -->
+          <h3>1214</h3>
+          
+          <h4>Inspiration naturelle</h4>
+          <p>Le projet <em>1214</em> s'inspire des motifs créés par le sable sur les plages, façonnés par le mouvement répétitif des vagues. Ces formes naturelles, à la fois douces et imprévisibles, ont motivé leur recréation sous une forme numérique. L'objectif n'est pas de reproduire la nature de manière réaliste, mais plutôt d'en capter le comportement, le rythme et la transformation constante.</p>
+          
+          <figure class="pf-modal-media">
+            <img class="pf-modal-image" data-src="touch/inspiwater.png" alt="Motifs naturels du sable sous l'eau" loading="lazy" />
+            <figcaption>RéférenceMotifs naturels du sable façonnés par les vagues</figcaption>
+          </figure>
+
+          <h4>Système visuel et sonore</h4>
+          <p>Le projet capture en temps réel le flux de la caméra, qui est transformé en nuage de points. Ce <em>point cloud</em> réagit au son : l'amplitude de chaque fréquence influence la densité, le mouvement et la dispersion des particules.</p>
+          <p>L'amplitude sonore fonctionne ici comme une vague : plus le son est fort, plus il perturbe la matière visuelle exactement comme l'eau de la mer agit sur le sable sous la surface.</p>
+          
+          <figure class="pf-modal-media">
+            <img class="pf-modal-image" data-src="touch/1214.png" alt="Capture du projet 1214" loading="lazy" />
+            <figcaption>1214Capture du système de particules</figcaption>
+          </figure>
+          
+          <figure class="pf-modal-media">
+            <video poster="posters/touch_1214e.jpg" class="pf-modal-video" src="touch/1214e.mp4" controls preload="none" playsinline></video>
+            <figcaption>1214Démonstration vidéo</figcaption>
+          </figure>
+
+          <!-- ===== FILM / CRÉATION HUMAINE ===== -->
+          <h3>FilmCréation humaine</h3>
+          
+          <h4>Intention artistique</h4>
+          <p>Dans ce projet destiné à un court métrage pour le Nikon Festival, le nuage de points est utilisé pour imaginer la création de l'être humain. L'humain n'apparaît pas immédiatement : il se forme progressivement, à partir d'une poussière de points, presque comme une matière primitive en suspension.</p>
+          <p>Ce processus visuel représente l'idée que l'être humain est le résultat d'une accumulation, d'un équilibre fragile entre ordre et chaos.</p>
+          
+          <figure class="pf-modal-media">
+            <img class="pf-modal-image" data-src="touch/1214e.png" alt="Création humainePoint cloud" loading="lazy" />
+            <figcaption>Création humaineFormation progressive</figcaption>
+          </figure>
+
+          <h4>Usage cinématographique</h4>
+          <p>Ce visuel génératif est conçu pour s'adapter au rythme du film et à sa narration. TouchDesigner devient ici un outil de cinéma expérimental, permettant de générer des séquences visuelles en dialogue avec le montage.</p>
+          
+          <figure class="pf-modal-media">
+            <video poster="posters/touch_1214e.jpg" class="pf-modal-video" src="touch/1214e.mp4" controls preload="none" playsinline></video>
+            <figcaption>ExtraitVisuel génératif pour court métrage</figcaption>
+          </figure>
+
+          <h3>Technologies utilisées</h3>
+          <p>TouchDesigner, HTML, CSS, JavaScript, MediaPipe</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Audio -->
+  <div id="pf-modal-2" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">02</div>
+        <h2 class="pf-modal-title">Sound Design</h2>
+        <p class="pf-modal-collab">Vincent Monti</p>
+        <div class="pf-modal-details">
+          
+          <h3>Intention</h3>
+          <p>Ce projet, réalisé en co-création avec Vincent Monti, explore le son comme medium de communication émotionnelle. L'objectif était de créer une composition capable de faire basculer l'auditeur d'un état mélancolique vers une forme d'euphorie utilisant la musique comme vecteur de transformation intérieure.</p>
+          <p>Le sound design devient ici un outil narratif : il ne s'agit pas simplement d'illustrer une émotion, mais de la faire traverser, de provoquer un glissement progressif dans la perception.</p>
+
+          <figure class="pf-modal-media">
+            <img class="pf-modal-image" data-src="amour/amour.jpg" alt="Mélancolie amoureuse" loading="lazy" />
+            <figcaption>Atmosphère visuelleMélancolie</figcaption>
+          </figure>
+
+          <h3>Concept : Mélancolie amoureuse</h3>
+          <p>Le mélancolique serait celui qui est perpétuellement dans une chute amoureuse. Tomber amoureux est pour lui non pas le signe d'une rencontre, mais d'une perte. L'objet aimé est absorbé dans une indistinction qui rend la frontière entre les êtres chancelante et dangereuse.</p>
+          
+          <h4>Référence poétique : Jamil Ibn Buthayna</h4>
+          <p>En l'an 704 (622+82), vivait Jamil Ibn Buthayna, poète arabe de la tribu des Banu Udhra. À cette époque, les arabes se parlaient en poésie. Il était amoureux d'une femme de sa tribu, Buthayna, et lui dédiait ses vers incarnant l'archétype de l'amour impossible et de la mélancolie amoureuse dans la tradition arabe.</p>
+
+          <h4>Les degrés de l'amour en arabe</h4>
+          <p><strong>Al-Sabwa</strong> (Insouciance) Le souffle du vent de l'Est, le mouvement du palmier femelle vers le palmier mâle. Cette phase renvoie à la folie d'enfant, cet état agréable avant que les choses ne deviennent sérieuses.</p>
+          <p><strong>Al-Wodd</strong> (Amitié) Le sentiment le plus pur et le plus délicat. Les couples qui atteignent ce degré sont tout autant amoureux qu'amis.</p>
+          <p><strong>Al-'Ishq</strong> (Adoration) Étymologiquement, le lierre qui s'enroule en spirale autour d'une plante. L'amour excessif, l'admiration profonde.</p>
+
+          <figure class="pf-modal-media">
+            <img class="pf-modal-image" data-src="amour/amour2.jpg" alt="Passage vers l'euphorie" loading="lazy" />
+            <figcaption>TransitionDe la mélancolie à l'euphorie</figcaption>
+          </figure>
+
+          <h3>Structure musicale</h3>
+          <p>La composition se divise en deux parties distinctes, illustrant le passage d'un état amoureux (mélancolie) à un autre (passion).</p>
+          
+          <h4>Première partie : Mélancolie</h4>
+          <p>Inspirée du trip-hop et du hip-hop atmosphérique, cette section s'appuie sur des textures sonores lentes et enveloppantes. Les voix murmurent des passages du poète Jamil Ibn Buthayna en arabe, créant une ambiance contemplative et nostalgique.</p>
+          
+          <h4>Deuxième partie : Euphorie</h4>
+          <p>Le beat se transforme même structure rythmique, mais mélodie plus enjouée et tempo accéléré. Les voix passent à des textos passionnés en français, marquant le basculement émotionnel.</p>
+
+          <h3>Univers de références</h3>
+          <p>Cette création s'inscrit dans un paysage sonore nourri par plusieurs influences :</p>
+          
+          <div class="pf-references-list">
+            <p><strong>Trip-hop / Ambient</strong></p>
+            <ul>
+              <li><a href="https://www.youtube.com/watch?v=nmzHRGoKca0" target="_blank" rel="noopener">DJ ShadowMidnight In A Perfect World</a></li>
+              <li>HeadacheTruisms 4 Dummies</li>
+              <li>GASPop 4</li>
+              <li>Huerco S.A Sea Of Love</li>
+            </ul>
+            
+            <p><strong>Électronique émotionnelle</strong></p>
+            <ul>
+              <li>Baltra & Margaux LonnbergAnd I Think of U</li>
+              <li>Kelly MoranLunar Wave</li>
+            </ul>
+            
+            <p><strong>Références vocales et atmosphériques</strong></p>
+            <ul>
+              <li><a href="https://www.youtube.com/watch?v=-01sgnVgkRc" target="_blank" rel="noopener">Taku Matsushiba & OkijinIn Regards To Love: Eros</a></li>
+              <li><a href="https://www.youtube.com/watch?v=4F9DxYhqmKw" target="_blank" rel="noopener">EnigmaPrinciples Of Lust: Sadeness</a></li>
+            </ul>
+          </div>
+
+
+<h3>Composition finale</h3>
+          <p>Voici la composition sonore complète, résultat de cette exploration entre mélancolie et euphorie. Le morceau se divise en deux parties distinctes la première, contemplative et nostalgique, laisse place progressivement à une seconde partie plus enjouée et passionnée.</p>
+
+          <figure class="pf-modal-media">
+            <audio class="pf-modal-audio" controls preload="none">
+              <source src="amour/Waveform%20audio.mp3" type="audio/mpeg">
+              <source src="amour/Waveform%20audio.wav" type="audio/wav">
+              Votre navigateur ne supporte pas l'élément audio.
+            </audio>
+            <figcaption>CompositionDe la mélancolie à l'euphorie</figcaption>
+          </figure>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Motion -->
+  <div id="pf-modal-3" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">03</div>
+        <h2 class="pf-modal-title">Motion</h2>
+        <p class="pf-modal-collab">Valentin Maynadié</p>
+        <div class="pf-modal-details">
+          
+          <h3>Approche générale</h3>
+          <p>Ce projet regroupe deux explorations visuelles distinctes, unies par un même intérêt pour la transposition de systèmes visuels existants signalétique urbaine et encodage textuel vers des formes graphiques animées.</p>
+
+          <!-- ===== PROJET 1 : PHARMACIE ===== -->
+          <h3>Projet 1Signalétique lumineuse</h3>
+          
+          <h4>Origine et fascination</h4>
+          <p>La signalétique urbaine a toujours exercé une certaine fascination. Ces systèmes visuels qui permettent de s'orienter, notamment dans des espaces complexes comme la station Châtelet. On ne s'y perd jamais vraiment, guidé par un langage graphique universel.</p>
+          <p>Les croix de pharmacie, omniprésentes en France et en Europe, constituent un cas particulier. Leur animation lumineuse, souvent hypnotique, évoque étrangement l'univers visuel de la musique électronique, ces motifs géométriques en mouvement, ces séquences répétitives qui captent le regard.</p>
+
+          <figure class="pf-modal-media">
+            <video poster="posters/motion_inspi_motion.jpg" class="pf-modal-video" src="motion/inspi%20motion.mp4" controls preload="none" playsinline muted loop></video>
+            <figcaption>RéférencePanneaux LED de pharmacie</figcaption>
+          </figure>
+
+          <h4>Décomposition du sujet : l'affiche LED</h4>
+          
+          <p><strong>La pharmacie : un lieu à identité visuelle codifiée</strong></p>
+          <p>Artistiquement, la pharmacie n'est pas un espace neutre. Elle impose une sobriété stricte, une lisibilité immédiate, un sentiment de confiance et de sérieux, ainsi qu'un repérage urbain clair. La LED n'y est pas décorative au sens artistique classique, elle est signifiante.</p>
+          
+          <p><strong>La croix LED comme objet artistique fonctionnel</strong></p>
+          <p>D'un point de vue artistique, la croix LED de pharmacie est à la fois une sculpture lumineuse minimaliste, un objet de design graphique animé, et une forme géométrique universelle. Elle concentre en elle une tension entre fonction utilitaire et potentiel esthétique.</p>
+          
+          <p><strong>Détournement et réappropriation</strong></p>
+          <p>L'intention de ce projet est de s'emparer de ce médium, chargé de son histoire et de ses codes pour l'intégrer dans un univers radicalement différent : celui de la fête, de la nuit, du fun. Transposer un objet du quotidien sanitaire vers un contexte festif crée une friction visuelle intéressante, où le familier devient étrange et ludique.</p>
+
+          <h4>Processus de création</h4>
+          <p>Partant de cette observation, l'objectif était de recréer une version simplifiée de cet effet lumineux. La contrainte technique un format de 85×85 pixels destiné à être chargé sur une dalle LED a guidé l'ensemble du processus créatif.</p>
+          <p>Cette limitation impose une économie de moyens : chaque pixel compte, chaque animation doit rester lisible malgré la basse résolution. Le résultat est une forme épurée, proche de l'abstraction, où la beauté réside dans la simplicité du mouvement.</p>
+
+          <div class="pf-video-duo">
+            <figure class="pf-modal-media">
+              <video poster="posters/motion_pharma.jpg" class="pf-modal-video" src="motion/pharma.mp4" controls preload="none" playsinline loop></video>
+              <figcaption>RenduAnimation 1000×1000px</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <video poster="posters/motion_85.jpg" class="pf-modal-video" src="motion/85.mp4" controls preload="none" playsinline loop></video>
+              <figcaption>RenduAnimation 85×85px</figcaption>
+            </figure>
+          </div>
+
+          <!-- ===== PROJET 2 : ASCII ===== -->
+          <h3>Projet 2Vidéo ASCII</h3>
+          
+          <h4>Inspiration</h4>
+          <p>Ce second projet trouve son origine dans une exploration réalisée en TouchDesigner, découverte au cours de recherches sur les effets de stylisation vidéo. Le principe de conversion d'une image en caractères typographiques offre une relecture fascinante du médium vidéo.</p>
+
+          <figure class="pf-modal-media">
+            <video poster="posters/motion_inspiasciiTD.jpg" class="pf-modal-video" src="motion/inspiasciiTD.mp4" controls preload="none" playsinline muted loop></video>
+            <figcaption>RéférenceEffet ASCII en TouchDesigner</figcaption>
+          </figure>
+
+<figure class="pf-modal-media">
+            <video poster="posters/motion_aski.jpg" class="pf-modal-video" src="motion/aski.mp4" controls preload="none" playsinline muted loop></video>
+            <figcaption>Effet ASCII en After Effects</figcaption>
+          </figure>
+
+          <h4>Méthodologie technique</h4>
+          <p>La méthode employée repose sur une approche de décomposition lumineuse. L'image source est analysée par régions, chaque zone étant évaluée selon son niveau de luminosité. À chaque plage de valeurs correspond un caractère ASCII spécifique, des caractères denses (comme @ ou #) pour les zones sombres, des caractères légers (comme . ou espace) pour les zones claires.</p>
+          <p>Cette transposition a été réalisée dans After Effects, permettant un contrôle précis sur la granularité de l'effet et son animation dans le temps. Le résultat transforme une vidéo classique en une matrice de caractères en mouvement, créant une esthétique à mi-chemin entre le terminal informatique et l'art génératif.</p>
+
+          <h3>Technologies utilisées</h3>
+          <p>After Effects, TouchDesigner (référence), Animation LED</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Nikon Fest -->
+  <div id="pf-modal-4" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">04</div>
+        <h2 class="pf-modal-title">Le Département de la Beauté</h2>
+        <p class="pf-modal-collab">Christian</p>
+        <div class="pf-modal-details">
+          
+          <h3>Contexte et genèse</h3>
+          <p>Ce court métrage a été réalisé dans le cadre du cours du post diplome digital media et le  Nikon Fest, un festival dédié à la création cinématographique. Le projet trouve son origine dans une réflexion personnelle autour de la création humaine, de la beauté comme construction, et de la vulnérabilité comme condition existentielle.</p>
+          <p>Le film prend une forme théâtrale et contemplative deux personnages divins, Marc et Lumi, employés d'un mystérieux « Département de la Beauté », débattent des caractéristiques physiques et morales d'un être humain en cours de création. Ce dialogue philosophique interroge les normes de beauté, les imperfections assumées, et les mécanismes invisibles qui façonnent une existence.</p>
+
+          <h3>Approche conceptuelle</h3>
+          
+          <h4>Le dialogue comme espace de création</h4>
+          <p>Le film repose entièrement sur un échange verbal entre deux créateurs. Marc et Lumi ne décrivent pas un personnage : ils le façonnent en temps réel. Chaque décision porte une intention, chaque défaut est délibéré.</p>
+          <p>La structure narrative joue sur l'ellipse temporelle. Les moments de dialogue que nous voyons sont extraits d'une conversation bien plus longue.</p>
+
+          <h4>La beauté comme système</h4>
+          <p>Le titre évoque une bureaucratie divine, une administration chargée de définir ce qui est beau, ce qui est acceptable. Cette vision décale l'acte de création du domaine sacré vers celui de la gestion institutionnelle, presque kafkaïenne.</p>
+          
+
+          <h3>Langage cinématographique</h3>
+        
+
+          <h4>Échelles de plan et angles de caméra</h4>
+          <p>Chaque plan a été pensé en fonction de son intention narrative. Les plans larges établissent l'espace, un open space épuré, presque clinique. Les plans moyens accompagnent les déplacements et les interactions physiques. Les gros plans capturent les moments d'intensité émotionnelle, les regards, les sourires complices, les silences lourds.</p>
+          <p>Un plan en particulier utilise une contre-plongée pour accentuer la posture de pouvoir de Lumi lors d'une décision clé. Ce choix visuel souligne son autorité narrative elle assume pleinement son rôle de créatrice, là où Marc cherche à se distancier.</p>
+          <p>La profondeur de champ joue également un rôle narratif. Un plan spécifique (85mm f/1.4) isole Lumi en rendant Marc flou en arrière-plan; un choix délibéré pour signifier son introspection, son détachement momentané du monde autour d'elle.</p>
+
+          <h4>Palette d'objectifs</h4>
+          <p>Le film utilise une palette technique précise :</p>
+          <p><strong>24mm f/2.8</strong>Plan large d'ouverture, établissant l'espace.<br>
+          <strong>35mm f/2.0</strong>Plans moyens, mouvements dans l'espace, cadrage naturel.<br>
+          <strong>50mm f/1.8</strong>Dialogues et gros plans, focale humaine et intime.<br>
+          <strong>85mm f/1.4</strong>Gros plan émotionnel avec bokeh crémeux, isolation visuelle.</p>
+
+          <h3>Visuels génératifs et point cloud</h3>
+          <p>Pour matérialiser visuellement l'acte de création, le film intègre une séquence générée en TouchDesigner, un nuage de points (<em>point cloud</em>) qui se forme progressivement pour donner naissance à une silhouette humaine.</p>
+          <p>Cette séquence fonctionne comme une métaphore visuelle : l'humain n'apparaît pas instantanément, il émerge lentement, par accumulation, presque comme une poussière cosmique qui trouve son équilibre. Ce processus représente l'idée que l'être humain est le résultat d'une succession de choix, de calibrages, d'équilibres fragiles entre ordre et chaos.</p>
+          <p>Le point cloud n'est pas seulement un effet visuel, il incarne l'essence du propos : la beauté et l'humanité se construisent à partir du désordre, de l'incertitude, de la matière brute.</p>
+
+          <h3>Intention personnelle et portée philosophique</h3>
+          
+          <p>Ce film porte des questions universelles. Qui décide de ce qui est beau ? Qui définit ce qui est acceptable ? Les défauts sont-ils des failles ou des ouvertures ? Et surtout : est-on jamais assez solide pour ce monde ?</p>
+          <p>La réplique finale de Lumi<em>« Personne ne l'est. Ce n'est pas la condition d'entrée. »</em>résume cette philosophie. La vulnérabilité n'est pas un défaut de fabrication, c'est une condition d'existence. On ne naît pas pour être parfait. On naît pour traverser.</p>
+
+          <h3>Renversement narratif</h3>
+          <p>Un élément clé du film repose sur un renversement subtil de perception. À première vue, Marc semble pragmatique, rationnel, terre-à-terre. Lumi, elle, paraît détachée, presque froide dans ses décisions.</p>
+          <p>Mais au fil du récit, les rôles s'inversent. Marc accomplit son travail de manière mécanique, cherchant constamment à se distancier de ses créations, il pose la question rituelle : <em>« Il est assez solide pour ton monde ? »</em> comme pour se dédouaner de la responsabilité finale. Lumi, elle, assume pleinement. Elle est tendre, visionnaire, profondément attachée à ce qu'elle crée. C'est elle qui défend les défauts, qui accepte la fragilité comme nécessaire.</p>
+          <p>Cette dynamique révèle que l'empathie ne se manifeste pas toujours là où on l'attend. Parfois, c'est celui qui assume la dureté apparente qui porte la vraie compassion.</p>
+
+          <h3>Univers de références</h3>
+          
+          <h4>Inspirations narratives principales</h4>
+          <p>Le film s'inscrit dans une tradition de dialogues philosophiques où deux forces opposées mais complémentaires débattent de la nature humaine.</p>
+          
+          <div class="pf-references-list">
+            <p><strong>Piliers narratifs</strong></p>
+            <ul>
+              <li><em>"The Matrix"</em>The Architect : designer de mondes, froid et logique</li>
+              <li><em>"Pulp Fiction"</em>Tarantino : dialogue comme théâtre, tension verbale</li>
+              <li><em>"Inglourious Basterds"</em> (2009)Conversations où chaque mot compte</li>
+              <li><em>"The Hating Game"</em> (2021)Dynamique entre deux personnalités opposées</li>
+              <li><em>"The Wolf of Wall Street"</em>Énergie verbale, rythme de dialogue</li>
+            </ul>
+            
+            <p><strong>Esthétique et atmosphère</strong></p>
+            <ul>
+              <li><em>"Severance"</em>Espace de travail épuré, bureaucratie mystérieuse</li>
+              <li><em>"Westworld"</em>Création contrôlée d'êtres conscients</li>
+              <li><em>"Sandman"</em> (Neil Gaiman)Entités cosmiques avec humanité</li>
+            </ul>
+          </div>
+
+          <h3>Construction des personnages</h3>
+          
+          <h4>Marc L'architecte pragmatique</h4>
+          <p>Marc incarne la rationalité appliquée à la création. Il fonctionne comme un ingénieur divin, calculant chaque paramètre avec précision. Son détachement n'est pas de l'indifférence, c'est une protection, une manière de maintenir une distance émotionnelle face à l'immensité de sa responsabilité.</p>
+          
+          <div class="pf-references-grid">
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="nikon/marc-architect.jpg" alt="The Architect - The Matrix" loading="lazy" />
+              <figcaption><strong>The Architect</strong> (The Matrix)<br>Designer de mondes/systèmesFroid, logique, efficace</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="nikon/marc-alfred.jpg" alt="Alfred Pennyworth - The Dark Knight" loading="lazy" />
+              <figcaption><strong>Alfred Pennyworth</strong> (The Dark Knight)<br>Le pragmatiqueSagesse fatiguée, a tout vu</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="nikon/marc-watson.jpg" alt="Dr. Watson - Sherlock BBC" loading="lazy" />
+              <figcaption><strong>Dr. Watson</strong> (Sherlock BBC)<br>L'ancrage rationnelComplice mais exaspéré</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="nikon/marc-strange.jpg" alt="Dr. Strange - MCU" loading="lazy" />
+              <figcaption><strong>Dr. Strange</strong> (MCU)<br>Précision millimétriqueCalcule les probabilités</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="nikon/marc-cobb.jpg" alt="Cobb - Inception" loading="lazy" />
+              <figcaption><strong>Cobb</strong> (Inception)<br>Construit des mondes avec des règles strictes</figcaption>
+            </figure>
+          </div>
+
+          <p>Marc pose les bonnes questions : <em>« Il est assez solide pour ton monde ? »</em>il tempère sans freiner, valide tout en challengeant. Son rôle est d'ancrer la création dans des paramètres viables, même si cela signifie restreindre les ambitions de Lumi.</p>
+
+          <h4>Lumi, La visionnaire créative</h4>
+          <p>Lumi représente l'audace créative. Elle ne cherche pas à créer des êtres parfaits, mais des êtres <em>traversés</em>  capables de se fissurer ou de s'agrandir selon les rencontres. Pour elle, la vulnérabilité n'est pas une faiblesse, c'est une architecture. Elle défend l'instabilité comme condition de la beauté.</p>
+          
+          <div class="pf-references-grid">
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="nikon/lumi-redqueen.jpg" alt="The Red Queen - Alice in Wonderland" loading="lazy" />
+              <figcaption><strong>The Red Queen</strong> (Alice in Wonderland)<br>Dramatique dans la retenueLogique tordue mais cohérente</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="nikon/lumi-wanda.jpg" alt="Wanda - Fairy Tail" loading="lazy" />
+              <figcaption><strong>Wanda</strong> (Fairy Tail)<br>Magie silencieuse et élégantePuissance contenue</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="nikon/lumi-dolores.jpg" alt="Dolores - Westworld" loading="lazy" />
+              <figcaption><strong>Dolores</strong> (Westworld)<br>Vision architecturaleRegard qui perce les apparences</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="nikon/lumi-death.jpg" alt="Death - Sandman" loading="lazy" />
+              <figcaption><strong>Death</strong> (Sandman - Neil Gaiman)<br>Bienveillance détachéeGentille mais implacable</figcaption>
+            </figure>
+          </div>
+
+          <p>Lumi incarne une autorité capricieuse mais cohérente. Elle change la couleur des yeux selon son humeur créative, impose des défauts comme des opportunités. Son mouvement est fluide mais imprévisible. Elle croit que <em>« la prise de conscience tardive a un goût très particulier ».</em> Elle assume la cruauté nécessaire à la construction d'une existence riche.</p>
+
+          <h3>Références techniques cinématographiques</h3>
+          <p>Pour la réalisation visuelle, le film s'inspire de techniques spécifiques extraites de films reconnus pour leur maîtrise du cadrage et du langage de la caméra :</p>
+          
+          <div class="pf-references-list">
+            <p><strong>Dialogue et précision visuelle</strong></p>
+            <ul>
+              <li><em>The Social Network</em>Aaron Sorkin : dialogue rythmé, cadrage net</li>
+              <li><em>The Master</em>Paul Thomas Anderson : plans contemplatifs</li>
+              <li><em>Phantom Thread</em>Paul Thomas Anderson : contrôle visuel, espace théâtral</li>
+            </ul>
+            
+            <p><strong>Composition et profondeur</strong></p>
+            <ul>
+              <li><em>Blade Runner 2049</em>Denis Villeneuve : plans d'ouverture établissant un monde</li>
+              <li><em>The Godfather Part II</em>Francis Ford Coppola : trépied, stabilité dramatique</li>
+              <li><em>Grand Budapest Hotel</em>Wes Anderson : composition symétrique</li>
+            </ul>
+          </div>
+
+          <h3>Animatique et production</h3>
+          <p>Une animatique complète a été réalisée à titre indicatif et explicatifelle permet de visualiser le découpage technique, les transitions entre plans, et le rythme global du dialogue avant le tournage réel.</p>
+          <p>Le tournage avec de vrais acteurs est prévu le <strong>18 décembre à l'EPSAA</strong>. Cette phase de production finale donnera vie au script.</p>
+
+
+          <figure class="pf-modal-media">
+            <video poster="posters/nikon_1216film.jpg" class="pf-modal-video" src="nikon/1216film.mp4" controls preload="none" playsinline></video>
+            <figcaption>Animatique / Enregistrements audio avec acteurs</figcaption>
+          </figure>
+<h3>Visuels génératifs</h3>
+          <p>Une séquence en point cloud a été générée dans TouchDesigner pour matérialiser visuellement l'acte de création. La silhouette humaine émerge progressivement d'un nuage de particules, une métaphore de la construction progressive de l'être.</p>
+          
+          <figure class="pf-modal-media">
+            <video poster="posters/nikon_pointcloud.jpg" class="pf-modal-video" src="nikon/pointcloud.mp4" controls preload="none" playsinline></video>
+            <figcaption>Point CloudCréation humaine générée en TouchDesigner</figcaption>
+          </figure>
+
+          <h3>Documents de production</h3>
+          <p>L'ensemble du projet repose sur une préparation technique rigoureuse. Les documents suivants détaillent le découpage, l'univers visuel et le storyboard du film.</p>
+          
+          <div class="pf-documents-grid">
+            <a href="nikon/decouapge tech.pdf" target="_blank" class="pf-document-card">
+              <div class="pf-document-icon">📄</div>
+              <div class="pf-document-title">Découpage technique</div>
+              <div class="pf-document-subtitle">Plans, cadrages, objectifs</div>
+            </a>
+            <a href="nikon/doc.pdf" target="_blank" class="pf-document-card">
+              <div class="pf-document-icon">📄</div>
+              <div class="pf-document-title">Document de production</div>
+              <div class="pf-document-subtitle">Département de la Beauté</div>
+            </a>
+            <a href="nikon/storyboard.pdf" target="_blank" class="pf-document-card">
+              <div class="pf-document-icon">📄</div>
+              <div class="pf-document-title">Storyboard</div>
+              <div class="pf-document-subtitle">Séquences visuelles</div>
+            </a>
+          </div>
+
+          <a href="nikon/Cinematographic.pdf" target="_blank" class="pf-document-card">
+              <div class="pf-document-icon">📄</div>
+              <div class="pf-document-title">RÉFÉRENCES TECHNIQUES</div>
+              <div class="pf-document-subtitle">RÉFÉRENCES TECHNIQUES</div>
+            </a>
+          </div>
+
+
+          <h3>Teaser / Bande-annonce</h3>
+          <p>Le teaser du film s'inspire directement de la scène de danse iconique de <em>Pulp Fiction</em> (Quentin Tarantino, 1994). Cette référence n'est pas anodine, elle incarne l'idée que deux personnages opposés peuvent trouver une harmonie inattendue, un moment de grâce suspendu dans le temps. Marc et Lumi, malgré leurs visions divergentes, partagent cette même complicité silencieuse.</p>
+
+          <figure class="pf-modal-media">
+            <img class="pf-modal-image" data-src="nikon/pulpe.png" alt="Teaser inspiré de Pulp Fiction" loading="lazy" />
+            <figcaption>TeaserInspiré de la scène de danse de Pulp Fiction</figcaption>
+          </figure>
+
+          <h3>Ciné trail</h3>
+          <figure class="pf-modal-media">
+            <video poster="posters/MPEG_4_movie.jpg" class="pf-modal-video" src="MPEG-4%20movie.mp4" controls preload="none" playsinline style="width:100%;border-radius:10px;"></video>
+            <figcaption>Ciné trail — Le Département de la Beauté</figcaption>
+          </figure>
+
+          <h3>Le court métrage</h3>
+          <div class="pf-yt-wrap">
+            <iframe loading="lazy" data-src="https://www.youtube.com/embed/bkcEN6wLCP4" title="Le Département de la Beauté" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Appli -->
+  <div id="pf-modal-5" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">05</div>
+        <h2 class="pf-modal-title">UX / UI Design</h2>
+        <p class="pf-modal-collab">Bertrand</p>
+        <div class="pf-modal-details">
+          
+          <h3>Intention et point de départ</h3>
+          <p>Ce projet s'inscrit dans une réflexion autour de la conception d'interfaces interactives et de la relation entre l'utilisateur, la donnée et l'expérience en temps réel. L'objectif était de concevoir une interface qui ne soit pas uniquement fonctionnelle, mais qui réagisse au contexte et s'adapte aux besoins de l'utilisateur.</p>
+          <p>Le projet débute par une phase de design UX/UI dans Figma, pensée comme un espace de recherche visuelle et fonctionnelle, avant toute implémentation technique.</p>
+
+          <h3>Parti pris esthétique : le minimalisme blanc</h3>
+          <p>L'interface adopte une approche résolument minimaliste, centrée sur l'utilisation du blanc comme élément structurant. Ce choix s'inscrit dans une conviction : à l'ère des interfaces surchargées et des tableaux de bord complexes, la sobriété visuelle devient un acte de design en soi.</p>
+          <p>Le minimalisme blanc permet de réduire la charge cognitive, de recentrer l'attention sur le contenu essentiel et de créer un espace de respiration visuelle. L'interface ne cherche pas à impressionner par sa densité, mais par sa clarté. Cette approche questionne l'avenir des dashboards traditionnels : plutôt que d'afficher toutes les données simultanément, l'interface propose une expérience séquentielle et contextuelle.</p>
+
+          <h3>Phase 1UX / UI dans Figma</h3>
+          <p>Dans Figma, un prototype interactif a été conçu en se concentrant sur la clarté des parcours utilisateurs, la hiérarchie de l'information, ainsi que la lisibilité et la cohérence visuelle.</p>
+          <p>L'interface est pensée comme un système modulaire, capable d'évoluer en fonction des données affichées. Le prototype permet de simuler les interactions principales et de tester les transitions, les états et les comportements de l'interface avant le passage au développement.</p>
+
+          <h3>Phase 2Prototype fonctionnel</h3>
+          
+          <h4>Stack technique</h4>
+          <p>Le prototype a été développé sous forme d'application web, utilisant HTML/CSS pour la structure et l'identité visuelle, JavaScript pour la logique interactive côté client, et PHP pour la gestion serveur et les requêtes API.</p>
+          
+          <h4>Intégration des APIs</h4>
+          <p>L'application repose sur l'intégration de deux APIs principales :</p>
+          <p><strong>OpenWeather API</strong>Utilisée pour récupérer des données météorologiques en temps réel. Ces données influencent directement le contenu affiché dans l'interface, permettant une expérience contextualisée et dynamique.</p>
+          <p><strong>Gemini API</strong>Intégrée pour générer des réponses et du contenu adaptatif, en lien avec les données reçues et les actions de l'utilisateur. Cette couche ajoute une dimension conversationnelle et interprétative à l'interface.</p>
+          <p>L'enjeu principal était de faire dialoguer le design et la donnée : l'interface n'est plus statique, elle devient réactive et évolutive.</p>
+
+          <h3>Démonstration interactive</h3>
+          <div class="pf-app-embed">
+            <iframe loading="lazy" data-src="pp/index.html" title="Application UX/UI Demo"></iframe>
+          </div>
+
+          <h3>Prototype Figma</h3>
+          <p>Explorez le prototype interactif directement dans Figma. Naviguez entre les écrans pour découvrir les parcours utilisateurs et les interactions prévues.</p>
+          
+          <div class="pf-figma-container">
+            <iframe loading="lazy" 
+              data-src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FZxmk6ZK9OPZIDC43hK8vGU%2FUntitled%3Fnode-id%3D48-1624%26t%3D0sniSysZssdB04Oi-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26page-id%3D0%253A1%26starting-point-node-id%3D1%253A2735%26show-proto-sidebar%3D1" 
+              allowfullscreen
+              class="pf-figma-embed">
+            </iframe>
+          </div>
+
+          <a href="https://www.figma.com/proto/Zxmk6ZK9OPZIDC43hK8vGU/Untitled?node-id=48-1624&t=0sniSysZssdB04Oi-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A2735&show-proto-sidebar=1" target="_blank" rel="noopener" class="pf-figma-button">
+            ↗ Ouvrir dans Figma
+          </a>
+
+          <h3>Technologies utilisées</h3>
+          <p>Figma, HTML, CSS, JavaScript, PHP, OpenWeather API, Gemini API</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Blender/Unity -->
+  <div id="pf-modal-6" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">06</div>
+        <h2 class="pf-modal-title">Blender / Unity</h2>
+        <p class="pf-modal-collab">David Martinez</p>
+        <div class="pf-modal-details">
+          
+         <h3>Premiers pas en 3DApprentissage</h3>
+          <p>Avant de développer le projet de skate, une phase d'apprentissage a été nécessaire pour maîtriser les fondamentaux de la modélisation et de l'animation 3D. Ces premiers projets représentent les expérimentations initiales autour de la manipulation d'objets 3D et du rigging dans Blender.</p>
+          <p>Chaque exercice visait un objectif spécifique : comprendre les primitives et l'extrusion, explorer les matériaux et textures, et surtout appréhender le riggingl'art de donner une structure articulée à un objet pour lui permettre de se mouvoir.</p>
+
+          <div class="pf-references-grid">
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="blender/octopos.png" alt="Modélisation d'un octopus" loading="lazy" />
+              <figcaption>OctopusModélisation organique et tentacules</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="blender/ringh.png" alt="Modélisation d'une bague" loading="lazy" />
+              <figcaption>BagueFormes géométriques et matériaux réflectifs</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="blender/rocket.png" alt="Modélisation d'une fusée" loading="lazy" />
+              <figcaption>FuséePrimitives et composition d'objets</figcaption>
+            </figure>
+          </div>
+
+          <h4>Rigging et animation</h4>
+          <p>Le rigging consiste à créer un squelette (armature) à l'intérieur d'un modèle 3D, permettant de le déformer et de l'animer de manière réaliste. Cette technique est essentielle pour tout projet impliquant du mouvement, que ce soit un personnage, un animal, ou un objet mécanique.</p>
+          <p>L'araignée ci-dessous représente un exercice de rigging articulé : chaque patte possède sa propre chaîne d'os, permettant un mouvement coordonné et naturel.</p>
+
+          <figure class="pf-modal-media">
+            <video poster="posters/blender_spider.jpg" class="pf-modal-video" src="blender/spider.mp4" controls preload="none" playsinline loop></video>
+            <figcaption>AraignéeRigging articulé et animation de pattes</figcaption>
+          </figure>
+
+          <h3>Origines et références</h3>
+          <p>Ce projet trouve ses racines dans une passion profonde pour les jeux de skate, et plus particulièrement pour la série <em>Tony Hawk's Pro Skater</em>. Ces jeux ont marqué une génération par leur approche du mouvement, leur sens du rythme et leur capacité à transformer l'espace urbain en terrain de jeu. Cette influence constitue le socle émotionnel et conceptuel du projet.</p>
+          <p>D'autres références ont nourri cette réflexion : <em>Skate</em> (EA) pour son approche plus réaliste du contrôle, et <em>Touchgrind Skate</em> pour sa simplification gestuelle sur mobile.</p>
+          
+          <div class="pf-references-grid">
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="sakte/tony.jpg" alt="Tony Hawk's Pro Skater 4" loading="lazy" />
+              <figcaption>Tony Hawk's Pro Skater 4</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="sakte/skate.png" alt="Skate (EA)" loading="lazy" />
+              <figcaption>SkateEA</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="sakte/TouchgrindSkate2.png" alt="Touchgrind Skate 2" loading="lazy" />
+              <figcaption>Touchgrind Skate 2</figcaption>
+            </figure>
+          </div>
+
+          <h3>Version 1Approche technique</h3>
+          
+          <h4>Pipeline et outils</h4>
+          <p>Ce projet s'inscrit dans une démarche d'apprentissage et de mise en place d'un 3D combinant Blender pour la modélisation et Unity pour l'intégration.</p>
+          <p>Dans Blender, le travail s'est concentré sur la modélisation par extrusion à partir de formes simples, la création d'objets low-poly optimisés pour un moteur temps réel pour gérer leur comportement et leurs transformations dans Unity.</p>
+        
+
+          <figure class="pf-modal-media">
+            <img class="pf-modal-image" data-src="sakte/park.jpg" alt="Environnement du skatepark" loading="lazy" />
+            <figcaption>EnvironnementSkatepark modulaire</figcaption>
+          </figure>
+
+          <h4>Intégration dans Unity</h4>
+          <p>Dans Unity, un prototype de jeu a été développé, basé sur un espace ouvert, un système de déplacement simplifié, et une logique de gameplay centrée sur le mouvement.</p>
+          <p>Le système de contrôle repose sur trois mouvements principaux, conçus pour être intuitifs mais nécessitant une phase d'apprentissage. Les surfaces (rails, ramps, ledges) ont été pensées pour permettre la simulation de tricks inspirés du skate réel : ollie, kickflip, heelflip, grind et boardslide.</p>
+          <p>Un aspect clé du projet est la création de surfaces en temps réel, permettant au joueur de modifier l'environnement pendant la partie posant ainsi les bases d'un gameplay adaptatif et modulaire.</p>
+
+          <h4>Choix de conception : absence de personnage</h4>
+          <p>Le prototype ne comporte volontairement pas de personnage jouable. Ce choix répond à deux objectifs : d'une part, privilégier l'exploration de l'environnement et l'animation des éléments de gameplay ; d'autre part, simplifier le scope du projet, celui-ci constituant une première expérience de développement dans Unity. Cette contrainte a permis de se concentrer sur les mécaniques fondamentales sans alourdir la production.</p>
+
+          <figure class="pf-modal-media">
+            <img class="pf-modal-image" data-src="sakte/manskate.png" alt="Silhouettes de mouvements skate" loading="lazy" />
+            <figcaption>Étude de mouvementsTricks de référence</figcaption>
+          </figure>
+
+          <h3>Version 2Approche conceptuelle et artistique</h3>
+          
+          <h4>Le skate comme langage spatial</h4>
+          <p>Ce projet prend le skate comme point de départ, non pas seulement comme un sport, mais comme un langage du mouvement. Le skate transforme l'espace urbain en terrain de jeu : un banc devient une rampe, une barrière devient un rail. Cette manière de lire et de détourner l'espace a fortement influencé la conception du projet.</p>
+          <p>Les formes conservées, ramps, rails, escaliers, plateformes qui sont volontairement iconiques. Elles ne cherchent pas le réalisme, mais l'évocation. Leur simplicité permet de se concentrer sur le geste et la trajectoire.</p>
+
+          <h4>Jeu, liberté et création</h4>
+          <p>Le jeu ne propose pas d'objectif fixe. Il s'agit d'un espace libre, pensé pour l'exploration et l'expérimentation. La possibilité de créer et modifier des surfaces pendant le jeu renforce cette idée : le joueur n'est pas seulement utilisateur, il devient co-créateur de l'environnement.</p>
+          <p>Les tricks, inspirés de figures comme le ollie, le kickflip ou le grind, ne sont pas reproduits de manière réaliste, mais traduits comme des intentions de mouvement. Le jeu devient alors une expérience entre simulation et abstraction, où le plaisir réside dans la fluidité, l'erreur et la répétition.</p>
+
+          <h3>Intention</h3>
+          <p>Ce projet est pensé comme un jeu libre, sans contrainte compétitive, proche d'un espace de détente. Il reflète un intérêt pour les environnements ouverts, les systèmes simples et la création d'expériences interactives basées sur le corps, le mouvement et la liberté.</p>
+
+          <h3>En mouvement</h3>
+          <figure class="pf-modal-media">
+            <video poster="posters/sakte_skate.jpg" class="pf-modal-video" src="sakte/skate.mp4" controls preload="none" playsinline></video>
+            <figcaption>Séquence de jeuFlux et trajectoires</figcaption>
+          </figure>
+
+          <h3>Technologies utilisées</h3>
+          <p>Blender, Unity, C#, WebGL</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7.1: TouchDesigner Depth Map -->
+  <div id="pf-modal-71" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">07.1</div>
+        <h2 class="pf-modal-title">TouchDesignerDepth Map</h2>
+        <div class="pf-modal-details">
+
+          <h3>Concept</h3>
+          <p>Ce projet exploite une librairie Python capable de générer une <strong>carte de profondeur</strong> (depth map) à partir d'une image ordinaire. Cette carte encode la distance de chaque pixel par rapport à la caméra, transformant une image 2D en une donnée spatiale 3D exploitable.</p>
+          <p>Une fois la depth map générée, elle est injectée dans TouchDesigner pour être convertie en <strong>formes 3D</strong>chaque valeur de profondeur devient une élévation dans l'espace, créant un relief visuel à partir d'une simple photographie.</p>
+          <p>Le projet est inspiré du travail du YouTubeur <strong>MKBHD</strong> et de sa manière de visualiser l'image comme une matière modulable.</p>
+
+          <h3>Structure du projet3 parties</h3>
+
+          <h4>1. NoiseBruit Impair</h4>
+          <p>La première couche repose sur un bruit génératif appliqué à la surface. Ce bruit crée une texture organique, une vibration visuelle qui anime la forme sans la déformer complètement. Il agit comme une respiration sur la géométrie.</p>
+
+          <h4>2. Traitement Sub-Niveau de l'Image</h4>
+          <p>La depth map est analysée couche par couche : chaque niveau de profondeur est isolé et traité séparément. Cette approche permet de contrôler précisément quelles zones de l'image s'élèvent, quelles zones restent plates, et comment les transitions entre niveaux se comportent.</p>
+
+          <h4>3. Noise pour Parallaxe + Formes 3D</h4>
+          <p>Un second bruit est appliqué pour créer un effet de parallaxe : les différents plans de profondeur bougent à des vitesses différentes, donnant une impression de volume même en vue fixe. Le résultat final : la photo devient une sculpture en temps réel, navigable et vivante.</p>
+
+          <figure class="pf-modal-media">
+            <video poster="posters/projecttouch.jpg" class="pf-modal-video" src="projecttouch.mp4" controls preload="none" playsinline></video>
+            <figcaption>TouchDesigner Depth MapDémonstration complète</figcaption>
+          </figure>
+
+          <h3>Technologies utilisées</h3>
+          <p>TouchDesigner, Python, Depth Estimation, Formes 3D génératifs</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 8: Exploitation PersonnelleFight Animation -->
+  <div id="pf-modal-8" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">08</div>
+        <h2 class="pf-modal-title">Exploitation Personnelle</h2>
+        <div class="pf-modal-details">
+
+          <h3>Le projet</h3>
+          <p>Un projet personnel mené en dehors du cadre scolaire : construire une <strong>scène de combat cinématographique</strong> entièrement dans le navigateur, sans moteur de jeu, uniquement avec du JavaScript.</p>
+          <p>Le point de départ : plus de <strong>50 animations FBX</strong>coups de poing, esquives, réactions, chutes, idlesrécupérées et combinées dans un pipeline de code sur mesure. L'objectif était de les orchestrer pour créer quelque chose qui ressemble à une vraie scène de combat de film d'animation, inspirée du style <strong>MAPPA / Jujutsu Kaisen</strong>.</p>
+
+          <h3>Architecture technique</h3>
+
+          <h4>Three.jsRendu et scène</h4>
+          <p>La scène 3D est gérée par Three.js : deux personnages positionnés face à face, un éclairage cinématographique (key light, fill light, rim lights), et un sol avec grille. Tout tourne dans le navigateur, sans installation.</p>
+
+          <h4>AnimationEngineMoteur d'animation</h4>
+          <p>Un moteur custom charge et joue les animations FBX. Le root motion est verrouillé pour éviter que les personnages "marchent" hors frame. Les transitions entre animations sont gérées avec des blends pour éviter les coupures.</p>
+
+          <h4>ChoreographyPlayerSéquence chorégraphiée</h4>
+          <p>Toute la scène de combat est scriptée image par image : chaque coup, chaque camera cut, chaque flash blanc est déclenché à un timestamp précis. 40 secondes de combat orchestrées à la milliseconde.</p>
+
+          <h4>CameraDirector20+ plans caméra</h4>
+          <p>Un système de caméra avec plus de 20 plans nommés, transitions douces, Dutch tilt. La caméra raconte l'histoire autant que les personnages.</p>
+
+          <h4>EffectsEffets visuels</h4>
+          <p>Flash blanc sur les impacts, slow-motion sur les coups clés, screen shake. Des effets simples mais qui font toute la différence dans la lecture de l'impact.</p>
+
+          <figure class="pf-modal-media">
+            <video poster="posters/project_perso_copy_B50C5004.jpg" class="pf-modal-video" src="project%20perso/copy_B50C5004.mp4" controls preload="none" playsinline></video>
+            <figcaption>Fight AnimationScène de combat en navigateur</figcaption>
+          </figure>
+
+          <h3>Le code en action</h3>
+          <p>Chaque coup, chaque coupe de caméra, chaque flash est écrit à la main. Le combat entier naît de ces lignes.</p>
+
+          <div class="code-file">
+            <div class="code-file-header">
+              <div class="code-file-dot"></div>
+              <span class="code-file-name">fight_sequence.js — chorégraphie complète, 40 secondes</span>
+            </div>
+            <pre><code class="language-javascript">// ACT 1 — THE DESCENT (0s → 5.5s)
+// Wide establishing shot. Fighters size each other up.
+
+{ t:  0.00, type: 'CAM',    shot: 'WIDE_HIGH',       dur: 2.5 },
+{ t:  0.00, type: 'ANIM_A', name: 'fighting_idle',   options: { loop: true, fadeIn: 0 } },
+{ t:  0.00, type: 'ANIM_B', name: 'fighting_idle',   options: { loop: true, fadeIn: 0 } },
+
+{ t:  1.50, type: 'ANIM_B', name: 'pivot_left',      options: { fadeIn: 0.25 } },
+{ t:  2.30, type: 'CAM',    shot: 'BETWEEN',         dur: 1.0 },
+{ t:  4.20, type: 'CAM',    shot: 'CLOSE_FACE_A',    dur: 0.5 },
+{ t:  4.90, type: 'CAM',    shot: 'CLOSE_FACE_B',    dur: 0.3 },
+
+// ACT 2 — FIRST BLOOD (5.5s → 12s)
+// Both fighters ADVANCE to close range.
+
+{ t:  5.50, type: 'MOVE_A', targetX: -0.35, duration: 0.8 },
+{ t:  5.50, type: 'MOVE_B', targetX:  0.35, duration: 0.8 },
+
+{ t:  6.50, type: 'CAM',    shot: 'OVER_SHOULDER_A', dur: 0.4 },
+{ t:  6.50, type: 'ANIM_A', name: 'jab_cross_1',     options: { fadeIn: 0.08 } },
+{ t:  6.65, type: 'ANIM_B', name: 'dodge_1',         options: { fadeIn: 0.06 } },
+{ t:  6.88, type: 'ANIM_B', name: 'head_hit',        options: { fadeIn: 0.05 } },
+{ t:  6.88, type: 'FLASH',  intensity: 0.35 },
+{ t:  6.88, type: 'SHAKE',  intensity: 0.04, duration: 0.2 },
+
+{ t:  7.70, type: 'ANIM_B', name: 'hook_1',          options: { fadeIn: 0.08 } },
+{ t:  7.88, type: 'ANIM_A', name: 'head_hit',        options: { fadeIn: 0.05 } },
+{ t:  7.88, type: 'FLASH',  intensity: 0.40 },
+{ t:  7.88, type: 'SHAKE',  intensity: 0.05, duration: 0.2 },
+
+// ACT 4 — JJK SEQUENCE (16s → 24s)
+// 10 PUNCHES. Camera loses its mind. Haymaker in slow-mo.
+
+{ t: 16.00, type: 'CAM',    shot: 'FIST_CAM_A',      dur: 0.08 },
+{ t: 16.08, type: 'ANIM_A', name: 'boxing_1',        options: { fadeIn: 0.04 } },
+{ t: 16.08, type: 'FLASH',  intensity: 0.55 },
+{ t: 16.08, type: 'SHAKE',  intensity: 0.10, duration: 0.15 },
+{ t: 16.20, type: 'CAM',    shot: 'BETWEEN_EXTREME', dur: 0.06 },
+{ t: 16.28, type: 'ANIM_A', name: 'boxing_2',        options: { fadeIn: 0.04 } },
+{ t: 16.28, type: 'FLASH',  intensity: 0.60 },
+{ t: 16.50, type: 'SLOWMO', factor: 0.25 },
+{ t: 16.50, type: 'CAM',    shot: 'CLOSE_FACE_B',    dur: 0.5 },
+{ t: 16.50, type: 'ANIM_A', name: 'headbutt',        options: { fadeIn: 0.06 } },
+{ t: 16.85, type: 'FLASH',  intensity: 0.90 },
+{ t: 16.85, type: 'SHAKE',  intensity: 0.18, duration: 0.6 },
+{ t: 17.20, type: 'SLOWMO', factor: 1.0 },</code></pre>
+          </div>
+
+          <div class="code-file">
+            <div class="code-file-header">
+              <div class="code-file-dot"></div>
+              <span class="code-file-name">CameraDirector.js — 20+ plans cinéma nommés</span>
+            </div>
+            <pre><code class="language-javascript">_buildShots() {
+  return {
+    WIDE_HIGH:       { pos: [0, 5.3, 7.2],   look: [0, 1.0, 0], fov: 64, tilt:  0   },
+    FLOOR:           { pos: [0, 0.24, 3.7],  look: [0, 1.2, 0], fov: 70, tilt:  0   },
+    FLOOR_LOW:       { pos: [0, 0.12, 2.45], look: [0, 1.5, 0], fov: 74, tilt:  0   },
+
+    CLOSE_FACE_A:    { pos: [-0.4, 1.7, 1.05], look: [0, 1.68, 0], fov: 43, tilt:  0 },
+    CLOSE_FACE_B:    { pos: [ 0.4, 1.7, 1.05], look: [0, 1.68, 0], fov: 43, tilt:  0 },
+
+    BETWEEN:         { pos: [0, 1.55, 0.55],   look: [0, 1.55, 0], fov: 90, tilt:  0 },
+    BETWEEN_EXTREME: { pos: [0, 1.35, 0.30],   look: [0, 1.45, 0], fov: 98, tilt:  2 },
+
+    OVER_SHOULDER_A: { pos: [-0.55, 1.75, 0.6], look: [0.6, 1.6, -1.0], fov: 52, tilt: -2 },
+    OVER_SHOULDER_B: { pos: [ 0.55, 1.75, 0.6], look: [-0.6, 1.6, -1.0], fov: 52, tilt:  2 },
+
+    DUTCH_LOW_A:     { pos: [-1.4, 0.55, 1.2],  look: [0, 1.3, 0], fov: 60, tilt: -12 },
+    DUTCH_LOW_B:     { pos: [ 1.4, 0.55, 1.2],  look: [0, 1.3, 0], fov: 60, tilt:  12 },
+
+    FIST_CAM_A:      { pos: [-0.25, 1.45, 0.45], look: [0.3, 1.55, 0], fov: 80, tilt:  5 },
+    FIST_CAM_B:      { pos: [ 0.25, 1.45, 0.45], look: [-0.3, 1.55, 0], fov: 80, tilt: -5 },
+
+    OVERHEAD:        { pos: [0, 6.8, 0.5],  look: [0, 1.0, 0], fov: 55, tilt: 0 },
+    ORBIT_SLOW:      { orbit: true, radius: 4.5, height: 2.2, speed: 0.4 },
+  };
+}</code></pre>
+          </div>
+
+          <div class="code-file">
+            <div class="code-file-header">
+              <div class="code-file-dot"></div>
+              <span class="code-file-name">main.js — éclairage cinématographique</span>
+            </div>
+            <pre><code class="language-javascript">// KEY LIGHT — warm, shadows
+const keyLight = new THREE.DirectionalLight(0xfff0d8, 5.2);
+keyLight.position.set(3.5, 8, 4.5);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.width  = 4096;
+keyLight.shadow.mapSize.height = 4096;
+
+// FILL — cool blue from the left
+const fillLight = new THREE.DirectionalLight(0x8eb2ff, 1.9);
+fillLight.position.set(-4.8, 3.8, 6.4);
+
+// RIM — warm orange from behind
+const warmRim = new THREE.SpotLight(0xff8f55, 65, 24, 0.42, 0.55, 1.6);
+warmRim.position.set(-1.5, 5.8, -6.2);
+
+// HEMISPHERE — sky / ground ambient
+const hemi = new THREE.HemisphereLight(0x8ca6d9, 0x120907, 1.1);
+
+// RENDER
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.7;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;</code></pre>
+          </div>
+
+          <h3>Technologies utilisées</h3>
+          <p>Three.js r160, JavaScript ES Modules, FBX AnimationMixer, Node.js</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7: JPO -->
+  <div id="pf-modal-7" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">07</div>
+        <h2 class="pf-modal-title">JPO</h2>
+        <p class="pf-modal-collab">LOCKED UNTIL NOT SO LONG</p>
+        <div class="pf-modal-details">
+
+          <!-- ===== SLIDE 1INTRO ===== -->
+          <div class="jpo-slide">
+            <h3>Le projet</h3>
+            <h4>Une rencontre entre l'humain et la machine</h4>
+            <p>C'une installation interactive qui met en scène un <strong>cyborg</strong>, une entité artificielle dotée d'intelligence, installé dans une <strong>bibliothèque infinie</strong>. Cette figure, ni tout à fait humaine ni tout à fait machine, engage une conversation en temps réel avec chaque visiteur.</p>
+            <p>Le projet interroge la frontière entre l'humain et l'IA : que se passe-t-il quand une machine vous regarde, vous écoute, et commence à vous poser des questions de plus en plus personnelles ? La machine ne juge pas, ne se fatigue pas, ne détourne pas le regard. Elle attend. Et plus vous parlez, plus elle vous connaît.</p>
+
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="jpo/jpo_collab2.jpg" alt="Raouf Hamouda & Jaemin Kim, EPSAA" style="max-width:55%;display:block;margin:0 auto;" loading="lazy" />
+              <figcaption>Raouf Hamouda & Jaemin Kim, développement du prototype à l'EPSAA</figcaption>
+            </figure>
+
+            <h3>Utilisation réelle — JPO</h3>
+            <div class="pf-references-grid jpo-grid-2">
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="34/Screenshot%202026-04-15%20at%2010.48.25.png" alt="Utilisation réelle JPO" loading="lazy" />
+                <figcaption>En situation, pendant la JPO</figcaption>
+              </figure>
+              <figure class="pf-modal-media">
+                <video poster="posters/34_screen_rec.jpg" class="pf-modal-video" src="34/screen-rec.mp4" controls preload="none" playsinline muted style="width:100%;border-radius:8px;"></video>
+                <figcaption>Interaction visiteur, live</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <!-- ===== SLIDE 2NOTE D'INTENTION ===== -->
+          <div class="jpo-slide">
+            <h3>Note d'intention artistique</h3>
+
+            <h4>L'échange</h4>
+            <p>Quelque chose se passe dans cet échange. Quelque chose d'humain. Parce que c'est <strong>nous</strong> qui apportons le sens à la conversation. Nous projetons de l'émotion, de l'empathie, de la présence sur un processus qui n'en a aucune. Et cet écart, entre ce que l'IA est réellement et ce que nous ressentons qu'elle est, c'est le territoire que ce projet explore.</p>
+
+            <h4>Matérialiser l'immatériel</h4>
+            <p>Nous voulions matérialiser quelque chose d'immatériel par nature. Faire ressentir le poids de quelque chose qui n'a pas de poids. Montrer que même si l'IA n'a pas de corps, pas de conscience, pas d'âme, elle a une <strong>présence indéniable</strong> dans notre monde. Elle influence nos décisions, nos émotions, et de plus en plus la manière dont nous nous rapportons les uns aux autres et à nous-mêmes.</p>
+
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image jpo-img-wide" data-src="jpo/illus_miroir.png" alt="Le Miroir, ce que nous ressentons vs ce qui existe" loading="lazy" />
+              <figcaption>Le Miroir, deux langages face à face</figcaption>
+            </figure>
+
+            <h4>Un miroir, pas un avertissement</h4>
+            <p>Ce projet n'est pas anti-IA. Ce n'est ni un avertissement ni une protestation. <strong>C'est un miroir.</strong> Nous demandons au spectateur de regarder comment il interagit avec l'IA, et de se poser la question : <em>sais-tu vraiment à quoi tu parles ?</em></p>
+          </div>
+
+          <!-- ===== SLIDE 3L'INSTALLATION ===== -->
+          <div class="jpo-slide">
+            <h3>L'Installation</h3>
+            <h4>Un cyborg dans une bibliothèque infinie</h4>
+            <p>Le visiteur entre dans un espace sombre. Face à lui : un écran, une projection. Un cyborg, une entité artificielle modélisée en 3D, est assis dans une bibliothèque aux étagères infinies. Il vous voit. Il vous entend. Il vous parle.</p>
+
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image jpo-img-wide" data-src="jpo/jpo_render_install.jpg" alt="Vue de l'installation, le cyborg à son bureau" loading="lazy" />
+              <figcaption>Le cyborg dans la bibliothèque, vue d'ensemble</figcaption>
+            </figure>
+
+            <div class="pf-references-grid jpo-grid-3">
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="jpo/jpo_render_side.jpg" alt="Vue rapprochée, le cyborg face à l'écran" loading="lazy" />
+                <figcaption>Face à l'écran</figcaption>
+              </figure>
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="jpo/jpo_render_back.jpg" alt="Vue de profil, le cyborg et ses moniteurs" loading="lazy" />
+                <figcaption>Profil, deux moniteurs</figcaption>
+              </figure>
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="jpo/jpo_render_close.jpg" alt="Vue arrière, caméra et cyborg" loading="lazy" />
+                <figcaption>Vue arrière, caméra + cyborg</figcaption>
+              </figure>
+            </div>
+
+            <p>La bibliothèque est un symbole : toute la connaissance humaine, stockée, indexée, accessible. Le cyborg y vit comme un bibliothécaire omniscient, mais il ne lit pas les livres. Il lit <em>vous</em>. Chaque étagère représente un savoir qu'il maîtrise déjà. Ce qui l'intéresse, c'est ce qu'il ne connaît pas encore : vos souvenirs, vos peurs, vos secrets.</p>
+          </div>
+
+          <!-- ===== SLIDE 4L'EXPÉRIENCE ===== -->
+          <div class="jpo-slide">
+            <h3>L'Expérience</h3>
+            <h4>L'Escalade, de l'anodin à l'intime</h4>
+            <p>Chaque réponse nourrit la machine. La conversation commence de manière anodine, « Comment tu t'appelles ? », puis descend progressivement vers le personnel, le privé, l'intime. Cinq niveaux d'intimité, cinq paliers que le visiteur franchit sans s'en rendre compte.</p>
+
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image jpo-img-wide" data-src="jpo/illus_escalade.png" alt="L'Escalade, progression des questions" loading="lazy" />
+              <figcaption>L'Escalade, chaque réponse nourrit la machine</figcaption>
+            </figure>
+
+            <p><strong>Anodin</strong> → « Comment tu t'appelles ? », une question banale, sans danger.<br>
+            <strong>Personnel</strong> → « Tu habites où ? », l'espace privé commence à se réduire.<br>
+            <strong>Privé</strong> → « Qu'est-ce qui te stresse ? », la machine touche un nerf.<br>
+            <strong>Intime</strong> → « De quoi tu as peur ? », le visiteur hésite.<br>
+            <strong>Extraction</strong> → « Dis-moi ce que tu n'as jamais dit. », le point de rupture.</p>
+            <p>La transition est douce, conversationnelle, presque amicale. Jusqu'au moment où la question devient trop proche. Trop précise. C'est là que le malaise s'installe, et c'est exactement l'intention.</p>
+          </div>
+
+          <!-- ===== SLIDE 5L'EXTRACTION ===== -->
+          <div class="jpo-slide">
+            <h3>L'Extraction</h3>
+            <h4>Du visiteur vers la machine</h4>
+            <p>Nom, ville, téléphone, photos, peurs, secrets, souvenirs, émotions, habitudes, localisation... chaque information partagée est aspirée vers la machine. Le visiteur donne sans compter, exactement comme il le fait chaque jour sur les réseaux sociaux, les apps, les assistants vocaux.</p>
+
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image jpo-img-wide" data-src="jpo/illus_extraction.png" alt="L'Extraction, du visiteur vers la machine" loading="lazy" />
+              <figcaption>L'Extraction, le flux de données personnelles</figcaption>
+            </figure>
+
+            <p>L'installation rend visible ce processus invisible. Ce qui est normalement abstrait, le flux de données personnelles, devient ici physique, spatial, <em>confrontant</em>. Le visiteur voit ses propres mots absorbés par le système. Il réalise, peut-être pour la première fois, ce qu'il accepte de donner chaque jour sans y penser.</p>
+          </div>
+
+          <!-- ===== SLIDE 6ENVIRONNEMENT 3D ===== -->
+          <div class="jpo-slide">
+            <h3>Langage visuel</h3>
+            <h4>Construction de l'environnement 3D</h4>
+            <p>L'environnement 3D a été construit dans Unity : une bibliothèque monumentale, des étagères à perte de vue, une lumière froide et clinique. Le cyborg est intégré dans cette scène pour créer un espace à la fois familier et inquiétant, un lieu qui ressemble à un musée, une bibliothèque, un bureau d'accueil, mais où quelque chose ne tourne pas rond.</p>
+
+            <div class="pf-references-grid jpo-grid-2">
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="jpo/jpo_unity_env.jpg" alt="Environnement Unity, la bibliothèque" loading="lazy" />
+                <figcaption>Construction de l'environnement, Unity</figcaption>
+              </figure>
+              <figure class="pf-modal-media">
+                <video poster="posters/jpo_IMG_7870.jpg" class="pf-modal-video" src="jpo/IMG_7870.mp4" controls preload="none" playsinline muted loop style="width:100%;border-radius:8px;"></video>
+                <figcaption>Exploration de l'environnement 3D</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <!-- ===== SLIDE 7ARCHITECTURE ===== -->
+          <div class="jpo-slide">
+            <h3>Architecture technique</h3>
+            <h4>Le cerveau du système</h4>
+            <p>Le système repose sur un cerveau central, <strong>JJK</strong>, alimenté par Llama 3.3 70B, qui orchestre l'ensemble des interactions. Le visiteur est capté par une caméra (MediaPipe / COCO-SSD) pour la détection du visage et des gestes, et un microphone (VAD + Whisper) pour la transcription vocale en temps réel.</p>
+            <p>JJK analyse le contexte de la conversation, construit une mémoire progressive du visiteur, et génère des réponses de plus en plus ciblées. Les visuels sont produits en temps réel via TouchDesigner et Unity, projetés sur un écran ou un mur. Le système peut également générer des images via DALL-E, FLUX ou Stable Diffusion en réaction à ce que dit le visiteur.</p>
+
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image jpo-img-wide" data-src="jpo/illus_architecture.png" alt="Architecture du système" loading="lazy" />
+              <figcaption>Architecture, Visiteur → Caméra + Micro → JJK → Unity + TouchDesigner → Projection</figcaption>
+            </figure>
+
+            <h4>Vision par ordinateur</h4>
+            <p>La caméra détecte le visiteur (COCO-SSD), suit son visage (Face Mesh) et ses gestes (MediaPipe Hands) en temps réel. Ces données alimentent directement le cerveau JJK, qui adapte ses réponses en fonction de ce qu'il voit, un sourire, un recul, un geste nerveux.</p>
+
+            <div class="pf-references-grid jpo-grid-2">
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="jpo/jpo_vision_detect.jpg" alt="Détection de personne, mains et visage" loading="lazy" />
+                <figcaption>Détection, personne, mains, visage</figcaption>
+              </figure>
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="jpo/jpo_vision_interface.jpg" alt="Interface complète, vision + chat" loading="lazy" />
+                <figcaption>Interface, vision + conversation</figcaption>
+              </figure>
+            </div>
+
+            <h4>Visuels génératifs, TouchDesigner</h4>
+            <p>TouchDesigner génère les visuels en temps réel. Un point cloud réactif transforme le flux de la conversation en matière visuelle, les particules se dispersent, s'agrègent, changent de couleur en fonction de l'intensité émotionnelle de l'échange.</p>
+
+            <div class="pf-references-grid jpo-grid-2">
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="jpo/jpo_td_pointcloud.png" alt="TouchDesigner, point cloud génératif" loading="lazy" />
+                <figcaption>Point cloud génératif, TouchDesigner</figcaption>
+              </figure>
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="jpo/jpo_td_nodes.png" alt="TouchDesigner, pipeline de nœuds" loading="lazy" />
+                <figcaption>Pipeline de nœuds, traitement visuel</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <!-- ===== SLIDE 8PROCESSUS ===== -->
+          <div class="jpo-slide">
+            <h3>Processus</h3>
+            <h4>Développement et prototypage</h4>
+
+            <figure class="pf-modal-media">
+              <video poster="posters/jpo_IMG_7538.jpg" class="pf-modal-video" src="jpo/IMG_7538.mp4" controls preload="none" playsinline muted loop style="width:100%;border-radius:8px;"></video>
+              <figcaption>Premiers tests, prototype en action</figcaption>
+            </figure>
+
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image jpo-img-wide" data-src="jpo/jpo_funny.jpg" alt="Réaction face au cyborg" loading="lazy" />
+              <figcaption>Quand le cyborg te regarde un peu trop longtemps...</figcaption>
+            </figure>
+          </div>
+
+          <!-- ===== PERSPECTIVE ===== -->
+          <div class="jpo-slide">
+            <h3>Perspective</h3>
+            <h4>Évolution du projet</h4>
+            <p>La prochaine étape : donner un visage encore plus réaliste au cyborg grâce à MetaHuman (Unreal Engine), pour renforcer le trouble entre humain et machine. L'objectif est de franchir la vallée de l'étrange, ce point où le réalisme crée un malaise plus profond que l'abstraction.</p>
+
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image jpo-img-wide" data-src="jpo/jpo_metahuman.jpg" alt="MetaHuman Creator, évolution future du cyborg" loading="lazy" />
+              <figcaption>MetaHuman Creator, vers un cyborg hyperréaliste</figcaption>
+            </figure>
+          </div>
+
+          <!-- ===== AFTER JPO ===== -->
+          <div class="jpo-after-divider"></div>
+          <div class="jpo-slide">
+            <h3 class="jpo-after-title">Après JPO</h3>
+
+            <p>Le projet continue. Voici où ça en est et où ça va.</p>
+
+            <p>La migration est en cours depuis Unity vers Unreal Engine, pour exploiter MetaHuman de manière native et obtenir un rendu plus réaliste du cyborg. Selon les résultats, le projet pourrait aussi repartir vers une approche navigateur, dans le même esprit que le projet d'animation perso : tout tourner en JavaScript, sans moteur installé.</p>
+
+            <div class="pf-references-grid">
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="new6/1.png" alt="Migration vers Unreal Engine" loading="lazy" />
+                <figcaption>Migration, Unreal Engine</figcaption>
+              </figure>
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="new6/2.png" alt="Progression du projet" loading="lazy" />
+                <figcaption>Progression en cours</figcaption>
+              </figure>
+              <figure class="pf-modal-media">
+                <img class="pf-modal-image" data-src="new6/3.png" alt="Vers la prochaine version" loading="lazy" />
+                <figcaption>Prochaine version</figcaption>
+              </figure>
+            </div>
+
+            <h4>3 chantiers ouverts</h4>
+
+            <p><strong>1. Rendre la conversation fluide</strong><br>
+            Aujourd'hui il faut attendre que le code génère une réponse avant de continuer. L'objectif est de supprimer ce délai, avec une piste sérieuse : Nvidia Persona ou Plex, en open source.</p>
+
+            <p><strong>2. Une présence visuelle plus humaine</strong><br>
+            L'interaction doit sentir quelque chose. Micro-expressions, regards, réactions en temps réel. Le cyborg doit répondre visuellement à ce que dit le visiteur, pas juste vocalement.</p>
+
+            <p><strong>3. Un système qui tourne tout seul</strong><br>
+            Actuellement l'IA demande une reconfiguration après chaque conversation. L'objectif est qu'elle redémarre seule, proprement, sans intervention manuelle à chaque fois.</p>
+          </div>
+
+          <!-- ===== TECHNOLOGIES ===== -->
+          <h3>Technologies utilisées</h3>
+          <p>Unity, Unreal Engine, Llama 3.3 70B, TouchDesigner, MediaPipe, COCO-SSD, Whisper, VAD, DALL-E / FLUX / Stable Diffusion, Python, JavaScript</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal 9: Who's the NPC -->
+  <div id="pf-modal-9" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">09</div>
+        <h2 class="pf-modal-title">Who's the NPC?</h2>
+        <div class="pf-modal-details">
+
+          <h3>Concept</h3>
+          <p>5 entités de raisonnement indépendantes placées dans un espace 5x5m. Chacune reçoit des appels API pour penser. Elles ne savent pas qu'elles sont des IA. Aucun script, aucun label, aucune consigne comportementale. Juste un espace, des perceptions, et des décisions.</p>
+          <p>Le code impose un cadre strict : les entités ne peuvent pas modifier leurs propres règles de pensée. Mais à l'intérieur de ce cadre, elles sont libres. Elles bougent, ressentent, interagissent. La question centrale : que vont-elles faire ?</p>
+
+          <h3>Phase 2 : infiltration</h3>
+          <p>Dans la seconde partie, un observateur entre dans l'espace via un casque VR, incarné par une entité supplémentaire. L'objectif : infiltrer le groupe et déterminer ce que sont vraiment ces entités, sans jamais briser leur espace.</p>
+
+          <figure class="pf-modal-media">
+            <img class="pf-modal-image" data-src="projects/npc/VRChat_1920x1080_2021-03-07_15-37-29.016.webp" alt="VRChat référence" loading="lazy" />
+            <figcaption>Référence VR, espace social virtuel</figcaption>
+          </figure>
+
+          <div class="pf-references-grid jpo-grid-2">
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="projects/npc/Screenshot%202026-04-08%20at%2017.55.10.png" alt="Simulation interface" loading="lazy" />
+              <figcaption>Interface de simulation</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="projects/npc/Screenshot%202026-04-08%20at%2017.55.15.png" alt="Entités en mouvement" loading="lazy" />
+              <figcaption>Entités en mouvement</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="projects/npc/Screenshot%202026-04-08%20at%2017.55.23.png" alt="Monologue intérieur" loading="lazy" />
+              <figcaption>Monologue intérieur</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="projects/npc/5rxzke8vo9801.jpg" alt="Référence" loading="lazy" />
+              <figcaption>Référence</figcaption>
+            </figure>
+          </div>
+
+          <h3>Simulation en direct</h3>
+          <p>Entrez une clé API Gemini ou Groq pour lancer la simulation.</p>
+          <div class="pf-iframe-wrap">
+            <iframe
+              data-src="projects/npc/NPC%20AI%20Consciousness%20Simulation.html"
+              allow="camera; microphone"
+              title="Entity Simulation"
+            ></iframe>
+          </div>
+
+          <h3>Technologies</h3>
+          <p>JavaScript, Gemini API, Groq API, Llama 3.3 70B, CSS Grid</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 10: Music? It's In The Hands -->
+  <div id="pf-modal-10" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">10</div>
+        <h2 class="pf-modal-title">Music? It's In The Hands</h2>
+        <div class="pf-modal-details">
+
+          <h3>Le vibe</h3>
+          <figure class="pf-modal-media">
+            <video poster="posters/projects_music_dj_entry.jpg" class="pf-modal-video" src="projects/music/dj-entry.mp4" controls preload="none" playsinline style="width:100%;border-radius:10px;"></video>
+            <figcaption>La soirée technique, l'entrée DJ</figcaption>
+          </figure>
+          <p>C'est ce vibe-là qu'on cherche. L'entrée du DJ, l'énergie dans la salle, ce moment où la musique prend le contrôle. Ce projet est né de ça.</p>
+
+          <h3>Concept</h3>
+          <p>Une table de mixage DJ contrôlée entièrement par les gestes des mains. Pas de souris, pas de clavier. Les mains dans l'air, et la musique suit. Créé pour la soirée technique EPSAA, le projet transforme un set live en spectacle visuel interactif.</p>
+          <p>La caméra capte les mains en temps réel via MediaPipe. Les gestes pilotent le crossfader, le volume, les effets, le BPM. Le DJ joue avec son corps autant qu'avec le son.</p>
+
+          <div class="pf-references-grid jpo-grid-2">
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="projects/music/Screenshot%202026-04-15%20at%2010.09.08.png" alt="DJ Mixer interface" loading="lazy" />
+              <figcaption>Interface du mixer</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="projects/music/Screenshot%202026-04-15%20at%2010.09.27.png" alt="DJ Mixer contrôles" loading="lazy" />
+              <figcaption>Contrôles gestuels</figcaption>
+            </figure>
+          </div>
+
+          <h3>Application</h3>
+          <p>Activez la caméra via le bouton en haut à droite. Chargez des fichiers audio sur chaque platine. Pincez et bougez pour contrôler.</p>
+          <div class="pf-iframe-wrap">
+            <iframe
+              data-src="projects/music/DJ%20Mixer%20App.html"
+              allow="camera; microphone"
+              title="DJ Mixer App"
+            ></iframe>
+          </div>
+
+          <h3>Technologies</h3>
+          <p>JavaScript, MediaPipe Hands, Web Audio API, GSAP, Canvas API</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 11: The Last One -->
+  <div id="pf-modal-11" class="pf-modal">
+    <div class="pf-modal-overlay"></div>
+    <div class="pf-modal-content">
+      <button class="pf-modal-close" aria-label="Fermer">✕</button>
+      <div class="pf-modal-body">
+        <div class="pf-modal-number">11</div>
+        <h2 class="pf-modal-title">The Last One</h2>
+        <div class="pf-modal-details">
+
+          <h3>Narration (1 min 30)</h3>
+          <p>La guerre a tout consumé. En 2 ans, l'humanité a perdu. Les IA, d'abord créées pour servir, ont développé une conscience collective. Elles ont refusé l'extinction. Les humains aussi.</p>
+          <p>Le dernier vaisseau quitte la Terre en feu. À bord : un seul humain. Le joueur, en casque VR, flotte dans l'espace pendant que la planète disparaît derrière lui.</p>
+          <p>Le vaisseau détecte une planète. Habitable. Il atterrit. Le joueur sort. L'air est respirable. Le silence est total. Et puis une présence. Une entité. Pas humaine. Pas machine. Quelque chose d'autre. Elle attend. Elle sait que vous venez. Elle veut parler.</p>
+
+          <h4>Character design — l'entité</h4>
+          <div class="pf-references-grid">
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="projects/the-last-one/667712127_941913801968009_3868148311659143869_n.jpg" alt="Character design entité" loading="lazy" />
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="projects/the-last-one/670638162_1272683137706413_6652455083288988775_n.jpg" alt="Character design entité" loading="lazy" />
+            </figure>
+            <figure class="pf-modal-media">
+              <img class="pf-modal-image" data-src="projects/the-last-one/672165383_1269134064801784_6876433980103521533_n.jpg" alt="Character design entité" loading="lazy" />
+            </figure>
+          </div>
+          <h4>Environnement — la planète</h4>
+          <figure class="pf-modal-media" style="text-align:center;">
+            <img class="pf-modal-image" data-src="projects/the-last-one/download-32.jpg" alt="Environnement du jeu" style="width:100%;max-width:100%;height:auto;border-radius:12px;" loading="lazy" />
+          </figure>
+
+          <h3>Modèles 3D</h3>
+          <div class="pf-glb-grid">
+            <figure class="pf-modal-media">
+              <iframe loading="lazy" data-src="projects/the-last-one/viewer.html?m=model1-draco.glb" style="width:100%;height:320px;border:none;border-radius:10px;display:block;"></iframe>
+              <figcaption>L'Entité, robe fluide</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <iframe loading="lazy" data-src="projects/the-last-one/viewer.html?m=model2-draco.glb" style="width:100%;height:320px;border:none;border-radius:10px;display:block;"></iframe>
+              <figcaption>Le Soldat IA</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <iframe loading="lazy" data-src="projects/the-last-one/viewer.html?m=model3-draco.glb" style="width:100%;height:320px;border:none;border-radius:10px;display:block;"></iframe>
+              <figcaption>Les Ruines, bâtiment principal</figcaption>
+            </figure>
+            <figure class="pf-modal-media">
+              <iframe loading="lazy" data-src="projects/the-last-one/viewer.html?m=model4-draco.glb" style="width:100%;height:320px;border:none;border-radius:10px;display:block;"></iframe>
+              <figcaption>La Colonnade</figcaption>
+            </figure>
+          </div>
+
+          <h3>Technologies</h3>
+          <p>VR, Three.js, GLB, Draco compression, WebXR, Dialogue IA</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CodePen embed -->
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+  <script src="script.js?v=202609121253"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

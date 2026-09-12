@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENTITY SIMULATION</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080c;--surface:#0e0e14;--surface-2:#15151e;--surface-3:#1c1c28;
+  --border:rgba(255,255,255,0.06);--border-hover:rgba(255,255,255,0.12);
+  --text:#e8e8f0;--text-dim:#6a6a7e;--text-faint:#3d3d50;
+  --accent:#ff3b3b;--accent-dim:rgba(255,59,59,0.15);--accent-glow:rgba(255,59,59,0.25);
+  --purple:#7c4dff;--blue:#5090ff;--cyan:#00ccd5;--orange:#ff9f43;--green:#2ecc71;
+  --radius:12px;
+}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── SETUP SCREEN ── */
+.setup-screen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.setup-card{
+  width:100%;max-width:480px;background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;padding:32px;
+}
+.setup-title{
+  font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;
+  letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;
+}
+.setup-sub{font-size:12px;color:var(--text-dim);margin-bottom:28px;line-height:1.6}
+.field{margin-bottom:16px}
+.field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px}
+.field input,.field select{
+  width:100%;padding:12px 14px;font-size:13px;font-family:'JetBrains Mono',monospace;
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  color:var(--text);outline:none;transition:border-color .2s;
+}
+.field input:focus,.field select:focus{border-color:rgba(255,59,59,0.35)}
+.field input::placeholder{color:var(--text-faint)}
+.launch-btn{
+  width:100%;padding:14px;margin-top:8px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;
+  background:var(--accent);border:none;border-radius:10px;
+  color:#fff;cursor:pointer;transition:all .2s;
+}
+.launch-btn:hover{transform:scale(1.02);box-shadow:0 4px 20px var(--accent-glow)}
+.launch-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.error-line{font-size:11px;color:#ff5c5c;margin-top:10px;display:none;font-family:'JetBrains Mono',monospace}
+
+/* ── SIM LAYOUT ── */
+.sim-screen{display:none;flex-direction:column;height:100vh;overflow:hidden}
+.top-bar{
+  padding:12px 20px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;
+}
+.top-bar-left{display:flex;align-items:center;gap:16px}
+.sim-title{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--accent)}
+.tick-info{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim)}
+.status-pill{
+  font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;
+  border-radius:6px;border:1px solid var(--border);color:var(--text-dim);
+}
+.status-pill.thinking{border-color:var(--purple);color:var(--purple);animation:pulse-text 1s infinite}
+.status-pill.ok{border-color:var(--green);color:var(--green)}
+.status-pill.error{border-color:#ff5c5c;color:#ff5c5c}
+@keyframes pulse-text{0%,100%{opacity:1}50%{opacity:.4}}
+.ctrl-row{display:flex;gap:8px}
+.ctrl-btn{
+  height:30px;padding:0 12px;border:1px solid var(--border);border-radius:8px;
+  background:transparent;color:var(--text-dim);cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  transition:all .15s;
+}
+.ctrl-btn:hover{border-color:var(--border-hover);color:var(--text);background:var(--surface-2)}
+.ctrl-btn.danger:hover{border-color:#ff5c5c;color:#ff5c5c}
+
+.sim-body{flex:1;display:grid;grid-template-columns:1fr 340px;grid-template-rows:1fr 220px;overflow:hidden}
+
+/* ── ROOM ── */
+.room-wrap{
+  grid-row:1/3;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;padding:16px;gap:12px;overflow:hidden;
+}
+.panel-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-faint);margin-bottom:4px}
+.room-canvas{
+  flex:1;position:relative;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+}
+.room-grid-line{position:absolute;background:rgba(255,255,255,0.03)}
+/* entity dots */
+.edot{
+  position:absolute;width:28px;height:28px;border-radius:50%;
+  transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;
+  border:2px solid transparent;cursor:pointer;
+  transition:left .6s ease, top .6s ease, border-color .3s;
+  user-select:none;
+}
+.edot.thinking{animation:pulse-ring .8s ease infinite}
+@keyframes pulse-ring{0%,100%{box-shadow:0 0 0 0 rgba(124,77,255,0.4)}50%{box-shadow:0 0 0 6px rgba(124,77,255,0)}}
+.emotion-bar{
+  position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);
+  display:flex;gap:2px;white-space:nowrap;
+}
+.emotion-pip{width:4px;height:4px;border-radius:50%}
+
+/* ── INTERACTIONS ── */
+.interactions-wrap{
+  border-bottom:1px solid var(--border);display:flex;flex-direction:column;
+  padding:14px 16px;overflow:hidden;
+}
+.interactions-feed{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.interactions-feed::-webkit-scrollbar{width:3px}
+.interactions-feed::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:2px}
+.int-item{
+  background:var(--surface-2);border:1px solid var(--border);border-radius:9px;
+  padding:7px 10px;animation:fadeIn .3s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.int-header{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.int-badge{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;padding:2px 6px;border-radius:4px}
+.int-to{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-faint)}
+.int-text{font-size:11px;color:var(--text);line-height:1.5}
+.int-type-social{border-left:2px solid var(--cyan)}
+.int-type-physical{border-left:2px solid var(--orange)}
+
+/* ── THOUGHTS ── */
+.thoughts-wrap{display:flex;flex-direction:column;padding:14px 16px;overflow:hidden}
+.thoughts-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:6px;margin-top:8px;overflow:hidden}
+.thought-card{
+  background:var(--surface-2);border:1px solid var(--border);border-radius:9px;
+  padding:7px 9px;overflow:hidden;
+}
+.thought-card.active{border-color:rgba(124,77,255,0.3)}
+.t-id{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;margin-bottom:3px}
+.t-mood{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-faint);margin-bottom:3px}
+.t-text{font-size:10px;color:var(--text-dim);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div class="setup-screen" id="setupScreen">
+  <div class="setup-card">
+    <div class="setup-title">Entity Simulation</div>
+    <div class="setup-sub">5 independent reasoning entities in a 5×5m space.<br>Each one thinks on its own. No scripts. No labels.</div>
+
+    <div class="field">
+      <label>Provider</label>
+      <select id="providerSelect" onchange="toggleProvider()">
+        <option value="gemini">Gemini</option>
+        <option value="groq">Groq</option>
+      </select>
+    </div>
+    <div class="field" id="geminiField">
+      <label>Gemini API Key</label>
+      <input type="password" id="geminiKey" placeholder="AIza..."/>
+    </div>
+    <div class="field" id="groqField" style="display:none">
+      <label>Groq API Key</label>
+      <input type="password" id="groqKey" placeholder="gsk_..."/>
+    </div>
+    <div class="field">
+      <label>Tick interval (seconds)</label>
+      <select id="tickInterval">
+        <option value="6000">6s — fast</option>
+        <option value="10000" selected>10s — balanced</option>
+        <option value="15000">15s — slow</option>
+      </select>
+    </div>
+
+    <button class="launch-btn" id="launchBtn" onclick="launch()">Launch Simulation</button>
+    <div class="error-line" id="errorLine"></div>
+  </div>
+</div>
+
+<!-- SIM -->
+<div class="sim-screen" id="simScreen">
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="sim-title">Sim</div>
+      <div class="tick-info">tick <span id="tickNum">0</span></div>
+      <div class="status-pill" id="statusPill">idle</div>
+    </div>
+    <div class="ctrl-row">
+      <button class="ctrl-btn" id="pauseBtn" onclick="togglePause()">Pause</button>
+      <button class="ctrl-btn danger" onclick="resetSim()">Reset</button>
+    </div>
+  </div>
+
+  <div class="sim-body">
+    <!-- ROOM -->
+    <div class="room-wrap">
+      <div class="panel-label">5m × 5m space</div>
+      <div class="room-canvas" id="roomCanvas"></div>
+    </div>
+
+    <!-- INTERACTIONS -->
+    <div class="interactions-wrap">
+      <div class="panel-label">expressions &amp; interactions</div>
+      <div class="interactions-feed" id="interactionsFeed">
+        <div style="font-size:11px;color:var(--text-faint);padding:4px 0">waiting for first tick...</div>
+      </div>
+    </div>
+
+    <!-- THOUGHTS -->
+    <div class="thoughts-wrap">
+      <div class="panel-label">inner monologue</div>
+      <div class="thoughts-grid" id="thoughtsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+const get = k => (localStorage.getItem(k)||'').trim();
+const set = (k,v) => localStorage.setItem(k,v.toString().trim());
+const getJSON = k => { try{return JSON.parse(localStorage.getItem(k))}catch{return null} };
+const setJSON = (k,v) => localStorage.setItem(k,JSON.stringify(v));
+
+// ─── ENTITY CONFIG ────────────────────────────────────────────────────────────
+const ENTITY_COLORS = [
+  {bg:'rgba(124,77,255,0.18)',border:'#7c4dff',text:'#a98aff',label:'e_01'},
+  {bg:'rgba(0,204,213,0.15)',border:'#00ccd5',text:'#4de8f0',label:'e_02'},
+  {bg:'rgba(255,59,59,0.15)',border:'#ff3b3b',text:'#ff7070',label:'e_03'},
+  {bg:'rgba(255,159,67,0.15)',border:'#ff9f43',text:'#ffbf7a',label:'e_04'},
+  {bg:'rgba(46,204,113,0.15)',border:'#2ecc71',text:'#6ee49a',label:'e_05'},
+];
+
+const PERSONALITIES = [
+  {name:'curious',aggression:0.1,curiosity:0.9,sociability:0.7,fear:0.2},
+  {name:'shy',aggression:0.05,curiosity:0.4,sociability:0.15,fear:0.75},
+  {name:'bold',aggression:0.7,curiosity:0.5,sociability:0.65,fear:0.1},
+  {name:'neutral',aggression:0.3,curiosity:0.5,sociability:0.5,fear:0.3},
+  {name:'observer',aggression:0.1,curiosity:0.85,sociability:0.25,fear:0.4},
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let entities = [];
+let tick = 0;
+let paused = false;
+let simTimer = null;
+let apiProvider = 'gemini';
+let apiKey = '';
+let tickMs = 10000;
+let isRunning = false;
+
+// ─── AI CALL — from SERNA's aiCall pattern ────────────────────────────────────
+async function aiCallGemini(messages, temp=0.9, maxTok=1800){
+  const payload = {
+    contents: messages.map(m=>({
+      role: m.role==='assistant'?'model':'user',
+      parts:[{text:m.content}]
+    })),
+    generationConfig:{temperature:temp,maxOutputTokens:maxTok}
+  };
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||'HTTP '+r.status)}
+  const data = await r.json();
+  const parts = data?.candidates?.[0]?.content?.parts||[];
+  return parts.filter(p=>typeof p.text==='string').map(p=>p.text).join('');
+}
+
+async function aiCallGroq(messages, temp=0.9, maxTok=1800){
+  const r = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+    body:JSON.stringify({model:'llama-3.3-70b-versatile',messages,temperature:temp,max_tokens:maxTok})
+  });
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||'HTTP '+r.status)}
+  const data = await r.json();
+  return data.choices?.[0]?.message?.content||'';
+}
+
+async function aiCall(messages, temp=0.9, maxTok=1800){
+  if(apiProvider==='groq') return aiCallGroq(messages,temp,maxTok);
+  return aiCallGemini(messages,temp,maxTok);
+}
+
+function parseJSON(raw){
+  try{
+    const c = raw.replace(/```json|```/g,'').trim();
+    return JSON.parse(c);
+  }catch{
+    const m = raw.match(/\{[\s\S]*\}/);
+    if(m) return JSON.parse(m[0]);
+    throw new Error('JSON parse failed');
+  }
+}
+
+// ─── ENTITY INIT ─────────────────────────────────────────────────────────────
+function initEntities(){
+  entities=[];
+  for(let i=0;i<5;i++){
+    entities.push({
+      id:`e_0${i+1}`,
+      x: 0.15+Math.random()*0.7,
+      y: 0.15+Math.random()*0.7,
+      color: ENTITY_COLORS[i],
+      personality: PERSONALITIES[i],
+      mood:{curiosity:PERSONALITIES[i].curiosity,fear:PERSONALITIES[i].fear,energy:0.5+Math.random()*0.4},
+      memory:[],
+      lastThought:'...',
+      lastDecision:'idle',
+      thinking:false,
+    });
+  }
+}
+
+// ─── WORLD SNAPSHOT (what each entity perceives) ─────────────────────────────
+function getPerception(entity){
+  return entities
+    .filter(e=>e.id!==entity.id)
+    .map(e=>{
+      const dx=(e.x-entity.x)*5;
+      const dy=(e.y-entity.y)*5;
+      const dist=Math.sqrt(dx*dx+dy*dy).toFixed(1);
+      let dir='';
+      if(Math.abs(dx)>Math.abs(dy)) dir=dx>0?'right':'left';
+      else dir=dy>0?'below':'above';
+      return {id:e.id,distance:dist+'m',direction:dir};
+    })
+    .sort((a,b)=>parseFloat(a.distance)-parseFloat(b.distance));
+}
+
+// ─── REASONING PROMPT ────────────────────────────────────────────────────────
+// From SERNA's pattern: rich context in, structured output
+function buildPrompt(){
+  const worldState = entities.map(e=>({
+    id: e.id,
+    position: {x:(e.x*5).toFixed(2),y:(e.y*5).toFixed(2)},
+    personality: e.personality.name,
+    mood: {
+      curiosity: e.mood.curiosity.toFixed(2),
+      fear: e.mood.fear.toFixed(2),
+      energy: e.mood.energy.toFixed(2)
+    },
+    nearby: getPerception(e),
+    memory: e.memory.slice(-4),
+  }));
+
+  return `You are simultaneously the inner experience of 5 separate conscious beings in a bounded space.
+
+Each being has its own personality, mood, memory, and perception of what is near them.
+They do not know anything about each other except what they can sense — position and proximity.
+They do not know what kind of space they are in or what the others are.
+They just exist, perceive, and feel.
+
+For EACH being, reason from the inside — what do they feel? what do they notice? what do they decide to do?
+
+Respond ONLY with this exact JSON structure, nothing else:
+{
+  "e_01": {
+    "inner_monologue": "one raw sentence of inner thought, no labels",
+    "mood": {"curiosity": 0.0-1.0, "fear": 0.0-1.0, "energy": 0.0-1.0},
+    "move": {"x": 0.05-0.95, "y": 0.05-0.95},
+    "interaction": {"target": "e_XX or null", "type": "social or physical or none", "expression": "what they say or do, raw and natural, or null"}
+  },
+  "e_02": { ... },
+  "e_03": { ... },
+  "e_04": { ... },
+  "e_05": { ... }
+}
+
+Current tick: ${tick}
+World state:
+${JSON.stringify(worldState,null,2)}
+
+Rules:
+- inner_monologue: pure raw thought, never robotic, never meta
+- move: float values 0.05–0.95 in both axes (space is 1.0×1.0 normalized)
+- interaction.expression is ONLY set when the being actively initiates something (speaks, reaches out, retreats dramatically)
+- personality and mood shape behavior — a shy being avoids, a bold one approaches, a curious one investigates
+- mood values evolve naturally from situation
+- memory builds over ticks
+- Respond ONLY with the JSON object`;
+}
+
+// ─── REINFORCEMENT: simple mood drift toward personality baseline ─────────────
+function applyReinforcementDrift(entity){
+  const p = entity.personality;
+  entity.mood.curiosity += (p.curiosity - entity.mood.curiosity)*0.05;
+  entity.mood.fear += (p.fear - entity.mood.fear)*0.05;
+  entity.mood.energy = Math.min(1,Math.max(0,entity.mood.energy+(Math.random()*0.04-0.02)));
+}
+
+// ─── TICK ─────────────────────────────────────────────────────────────────────
+async function runTick(){
+  if(paused||isRunning) return;
+  isRunning=true;
+  tick++;
+  document.getElementById('tickNum').textContent=tick;
+  setStatus('thinking');
+  entities.forEach(e=>{e.thinking=true});
+  renderRoom();
+  renderThoughts();
+
+  try{
+    const prompt = buildPrompt();
+    const raw = await aiCall([{role:'user',content:prompt}], 0.9, 1800);
+    const result = parseJSON(raw);
+
+    entities.forEach(e=>{
+      const r = result[e.id];
+      if(!r) return;
+
+      // inner monologue
+      if(r.inner_monologue) e.lastThought=r.inner_monologue;
+
+      // mood update — clamp
+      if(r.mood){
+        e.mood.curiosity=Math.min(1,Math.max(0,typeof r.mood.curiosity==='number'?r.mood.curiosity:e.mood.curiosity));
+        e.mood.fear=Math.min(1,Math.max(0,typeof r.mood.fear==='number'?r.mood.fear:e.mood.fear));
+        e.mood.energy=Math.min(1,Math.max(0,typeof r.mood.energy==='number'?r.mood.energy:e.mood.energy));
+      }
+
+      // move — clamp
+      if(r.move){
+        e.x=Math.min(0.93,Math.max(0.07,typeof r.move.x==='number'?r.move.x:e.x));
+        e.y=Math.min(0.93,Math.max(0.07,typeof r.move.y==='number'?r.move.y:e.y));
+      }
+
+      // interaction
+      if(r.interaction&&r.interaction.type!=='none'&&r.interaction.expression){
+        addInteraction(e.id,r.interaction.target,r.interaction.expression,r.interaction.type);
+      }
+
+      // memory — SERNA pattern: store events per tick
+      e.memory.push(`tick${tick}: ${r.interaction?.type||'idle'}, mood_fear:${e.mood.fear.toFixed(1)}`);
+      if(e.memory.length>6) e.memory.shift();
+      e.lastDecision=r.interaction?.type||'idle';
+      e.thinking=false;
+
+      // reinforcement drift
+      applyReinforcementDrift(e);
+    });
+
+    setStatus('ok');
+  }catch(err){
+    setStatus('error',err.message.slice(0,60));
+    entities.forEach(e=>{e.thinking=false});
+  }
+
+  renderRoom();
+  renderThoughts();
+  isRunning=false;
+}
+
+// ─── RENDER ROOM ──────────────────────────────────────────────────────────────
+function renderRoom(){
+  const canvas = document.getElementById('roomCanvas');
+  // draw grid lines
+  if(!canvas.querySelector('.room-grid-line')){
+    for(let i=1;i<5;i++){
+      const h=document.createElement('div');
+      h.className='room-grid-line';
+      h.style.cssText=`left:0;right:0;top:${i*20}%;height:1px`;
+      canvas.appendChild(h);
+      const v=document.createElement('div');
+      v.className='room-grid-line';
+      v.style.cssText=`top:0;bottom:0;left:${i*20}%;width:1px`;
+      canvas.appendChild(v);
+    }
+  }
+  // update or create entity dots
+  entities.forEach(e=>{
+    let dot = document.getElementById('dot_'+e.id);
+    if(!dot){
+      dot=document.createElement('div');
+      dot.className='edot';
+      dot.id='dot_'+e.id;
+      dot.title=e.id+' ('+e.personality.name+')';
+      canvas.appendChild(dot);
+    }
+    dot.style.left=(e.x*100)+'%';
+    dot.style.top=(e.y*100)+'%';
+    dot.style.background=e.color.bg;
+    dot.style.borderColor=e.thinking?'#7c4dff':e.color.border;
+    dot.style.color=e.color.text;
+    dot.textContent=e.id;
+    dot.className='edot'+(e.thinking?' thinking':'');
+  });
+}
+
+// ─── RENDER THOUGHTS ──────────────────────────────────────────────────────────
+function renderThoughts(){
+  const grid = document.getElementById('thoughtsGrid');
+  // update in place
+  entities.forEach(e=>{
+    let card = document.getElementById('tcard_'+e.id);
+    if(!card){
+      card=document.createElement('div');
+      card.className='thought-card';
+      card.id='tcard_'+e.id;
+      grid.appendChild(card);
+    }
+    card.className='thought-card'+(e.thinking?' active':'');
+    card.innerHTML=`
+      <div class="t-id" style="color:${e.color.border}">${e.id} · ${e.personality.name}</div>
+      <div class="t-mood">c:${e.mood.curiosity.toFixed(2)} f:${e.mood.fear.toFixed(2)} e:${e.mood.energy.toFixed(2)}</div>
+      <div class="t-text">${e.lastThought}</div>
+    `;
+  });
+}
+
+// ─── ADD INTERACTION ──────────────────────────────────────────────────────────
+function addInteraction(entityId, target, text, type){
+  const feed = document.getElementById('interactionsFeed');
+  // clear placeholder
+  if(feed.children.length===1&&feed.children[0].tagName!=='DIV'.toUpperCase()||
+     (feed.children[0]&&feed.children[0].style.color)){
+    const first=feed.children[0];
+    if(first.textContent.includes('waiting')) feed.innerHTML='';
+  }
+
+  const e = entities.find(x=>x.id===entityId);
+  if(!e) return;
+  const typeClass = type==='social'?'int-type-social':'int-type-physical';
+  const item=document.createElement('div');
+  item.className=`int-item ${typeClass}`;
+  item.innerHTML=`
+    <div class="int-header">
+      <span class="int-badge" style="background:${e.color.bg};color:${e.color.text}">${e.id}</span>
+      ${target?`<span class="int-to">→ ${target}</span>`:''}
+      <span class="int-to" style="margin-left:auto;font-size:8px">${type} · tick${tick}</span>
+    </div>
+    <div class="int-text">${text}</div>
+  `;
+  feed.insertBefore(item,feed.firstChild);
+  while(feed.children.length>30) feed.removeChild(feed.lastChild);
+}
+
+// ─── STATUS ──────────────────────────────────────────────────────────────────
+function setStatus(state, msg=''){
+  const pill=document.getElementById('statusPill');
+  pill.className='status-pill '+state;
+  if(state==='thinking') pill.textContent='thinking...';
+  else if(state==='ok') pill.textContent='tick '+tick+' done';
+  else if(state==='error') pill.textContent='error: '+msg;
+  else pill.textContent=state;
+}
+
+// ─── CONTROLS ────────────────────────────────────────────────────────────────
+function togglePause(){
+  paused=!paused;
+  document.getElementById('pauseBtn').textContent=paused?'Resume':'Pause';
+  if(!paused) setStatus('ok');
+  else setStatus('paused');
+}
+
+function resetSim(){
+  clearInterval(simTimer);
+  tick=0;
+  paused=false;
+  isRunning=false;
+  document.getElementById('simScreen').style.display='none';
+  document.getElementById('setupScreen').style.display='flex';
+  document.getElementById('launchBtn').disabled=false;
+}
+
+function toggleProvider(){
+  const p=document.getElementById('providerSelect').value;
+  document.getElementById('geminiField').style.display=p==='gemini'?'':'none';
+  document.getElementById('groqField').style.display=p==='groq'?'':'none';
+}
+
+// ─── LAUNCH ──────────────────────────────────────────────────────────────────
+function launch(){
+  const provider=document.getElementById('providerSelect').value;
+  const key=provider==='gemini'
+    ?document.getElementById('geminiKey').value
+    :document.getElementById('groqKey').value;
+
+  if(!key.trim()){
+    const e=document.getElementById('errorLine');
+    e.textContent='Enter an API key to continue.';
+    e.style.display='block';
+    return;
+  }
+
+  document.getElementById('errorLine').style.display='none';
+  apiProvider=provider;
+  apiKey=key.trim();
+  tickMs=parseInt(document.getElementById('tickInterval').value)||10000;
+
+  document.getElementById('launchBtn').disabled=true;
+  document.getElementById('setupScreen').style.display='none';
+  document.getElementById('simScreen').style.display='flex';
+
+  initEntities();
+  renderRoom();
+  renderThoughts();
+
+  // first tick soon, then on interval
+  setTimeout(runTick,800);
+  simTimer=setInterval(runTick,tickMs);
+}
+</script>
+</body>
+</html>

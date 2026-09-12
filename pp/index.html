@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What's up there</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .phone-container {
+      width: 390px;
+      height: 844px;
+      background: #FFFFFF;
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      position: absolute;
+      top: 15px;
+      left: 0;
+      width: 100%;
+      height: 47px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      z-index: 100;
+    }
+
+    .status-time {
+      font-family: 'SF Pro Text', -apple-system, sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: #000;
+      letter-spacing: -0.41px;
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .signal-icon, .wifi-icon, .battery-icon {
+      height: 13px;
+    }
+
+    /* Header */
+    .app-header {
+      position: absolute;
+      top: 58px;
+      left: 0;
+      width: 100%;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #e5e7eb;
+      background: white;
+    }
+
+    .app-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: #000;
+    }
+
+    .memory-indicator {
+      position: absolute;
+      top: 109px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      color: rgba(0, 0, 0, 0.19);
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      position: absolute;
+      top: 140px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    /* Temperature Chart Section */
+    .temp-chart-section {
+      background: linear-gradient(180deg, #3b4d7a 0%, #4a5f8f 100%);
+      border-radius: 16px;
+      padding: 20px;
+      color: white;
+      box-shadow: 0 4px 16px rgba(59, 77, 122, 0.25);
+      margin-bottom: 24px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .chart-title-section h2 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      opacity: 0.95;
+    }
+
+    .chart-subtitle {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .current-temp {
+      text-align: right;
+    }
+
+    .temp-large {
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .temp-desc {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .chart-wrapper {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px 12px;
+      height: 180px;
+    }
+
+    .chart-canvas {
+      height: 148px;
+    }
+
+    .chart-loading {
+      text-align: center;
+      padding: 40px 16px;
+      color: white;
+    }
+
+    .chart-loading-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .chart-loading-text {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .refresh-btn {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 12px;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Input Section */
+    .input-section {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .city-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+
+    .city-suggestions.active {
+      display: block;
+    }
+
+    .city-suggestion-item {
+      padding: 12px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #1f2937;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .city-suggestion-item:last-child {
+      border-bottom: none;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+
+    .city-suggestion-item:first-child {
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+
+    .city-suggestion-item:hover {
+      background: #f9fafb;
+    }
+
+    .city-suggestion-item.highlighted {
+      background: #f3f4f6;
+      font-weight: 500;
+    }
+
+    .city-input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 0;
+      padding: 12px 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #1f2937;
+      outline: none;
+      transition: all 0.2s;
+      background: transparent;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .city-input:focus {
+      border-bottom-color: rgba(0, 0, 0, 0.25);
+    }
+
+    .city-input::placeholder {
+      color: rgba(0, 0, 0, 0.4);
+      text-align: center;
+    }
+
+    .question-input-wrapper {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .question-input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 0;
+      padding: 12px 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #1f2937;
+      outline: none;
+      transition: all 0.2s;
+      background: transparent;
+      text-align: center;
+    }
+
+    .question-input:focus {
+      border-bottom-color: rgba(0, 0, 0, 0.25);
+    }
+
+    .question-input::placeholder {
+      color: rgba(0, 0, 0, 0.4);
+      text-align: center;
+    }
+
+    /* Suggestions */
+    .suggestions-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .suggestions {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 20px;
+    }
+
+    .suggestion-item {
+      padding: 14px 16px;
+      border-top: 0.65px solid rgba(60, 60, 67, 0.18);
+      background: white;
+      font-family: 'SF Pro', -apple-system, sans-serif;
+      font-size: 11px;
+      color: #000;
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: -0.28px;
+    }
+
+    .suggestion-item:first-child {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .suggestion-item:last-child {
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+
+    .suggestion-item:active {
+      background: #f3f4f6;
+    }
+
+    .suggestion-chevron {
+      color: rgba(0, 0, 0, 0.3);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Ask Button */
+    .ask-button {
+      width: 218px;
+      height: 34px;
+      background: #1f2937;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 0 auto;
+      margin-top: 24px;
+    }
+
+    .ask-button:hover {
+      background: #374151;
+    }
+
+    .ask-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .check-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #FFFFFF;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 390px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+
+    .modal-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #9ca3af;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      color: #4b5563;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .weather-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .city-name {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .weather-desc {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 16px;
+      text-transform: capitalize;
+    }
+
+    .temp-display {
+      font-size: 48px;
+      font-weight: 300;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+
+    .weather-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .detail-item {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 12px;
+      border-radius: 10px;
+    }
+
+    .detail-label {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .answer-card {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .answer-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 12px;
+    }
+
+    .answer-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #4b5563;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #1f2937;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    .loading-text {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .error {
+      background: #fef2f2;
+      color: #991b1b;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    /* Scrollbar styling */
+    .main-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .main-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .main-content::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+
+    .main-content::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 430px) {
+      .phone-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-container">
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-time">1:41</div>
+      <div class="status-icons">
+        <svg class="signal-icon" width="18" height="12" viewBox="0 0 18 12" fill="none">
+          <rect width="3" height="7" rx="1" fill="black"/>
+          <rect x="5" y="3" width="3" height="9" rx="1" fill="black"/>
+          <rect x="10" y="1" width="3" height="11" rx="1" fill="black"/>
+          <rect x="15" width="3" height="12" rx="1" fill="black"/>
+        </svg>
+        <svg class="wifi-icon" width="15" height="11" viewBox="0 0 15 11" fill="none">
+          <path d="M7.5 11C8.05 11 8.5 10.55 8.5 10C8.5 9.45 8.05 9 7.5 9C6.95 9 6.5 9.45 6.5 10C6.5 10.55 6.95 11 7.5 11Z" fill="black"/>
+          <path d="M7.5 7C8.88 7 10.17 7.55 11.12 8.44L12.54 7.02C11.21 5.75 9.43 5 7.5 5C5.57 5 3.79 5.75 2.46 7.02L3.88 8.44C4.83 7.55 6.12 7 7.5 7Z" fill="black"/>
+          <path d="M7.5 1C10.52 1 13.27 2.28 15.23 4.34L13.81 5.76C12.23 4.08 9.98 3 7.5 3C5.02 3 2.77 4.08 1.19 5.76L-0.23 4.34C1.73 2.28 4.48 1 7.5 1Z" fill="black"/>
+        </svg>
+        <svg class="battery-icon" width="25" height="12" viewBox="0 0 25 12" fill="none">
+          <rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="black" stroke-opacity="0.35"/>
+          <path d="M23 4V8C23.8284 7.66122 24.3284 6.83685 24.3284 6C24.3284 5.16315 23.8284 4.33878 23 4Z" fill="black" fill-opacity="0.4"/>
+          <rect x="2" y="2" width="18" height="8" rx="1.5" fill="black"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- App Header -->
+    <div class="app-header">
+      <div class="app-title">What's up there</div>
+    </div>
+
+    <!-- Memory Indicator -->
+    <div class="memory-indicator">Memory off</div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Temperature Chart Section -->
+      <div class="temp-chart-section">
+        <div class="chart-header">
+          <div class="chart-title-section">
+            <h2>Today's forecast</h2>
+            <div class="chart-subtitle"><span id="chartCityName">Paris</span></div>
+          </div>
+          <div class="current-temp" id="currentTempDisplay">
+            <div class="temp-large">--°</div>
+            <div class="temp-desc">Loading...</div>
+          </div>
+        </div>
+        <div id="chartContent">
+          <div class="chart-loading">
+            <div class="chart-loading-spinner"></div>
+            <div class="chart-loading-text">Loading forecast...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- City Input -->
+      <div class="input-section">
+        <input 
+          type="text" 
+          id="cityInput" 
+          class="city-input" 
+          placeholder="Enter city name (e.g., Paris)"
+          value="Paris"
+          autocomplete="off"
+        />
+        <div class="city-suggestions" id="citySuggestions"></div>
+      </div>
+
+      <!-- Question Input -->
+      <div class="input-section">
+        <input 
+          type="text" 
+          id="questionInput" 
+          class="question-input" 
+          placeholder="Ask me about the weather"
+        />
+      </div>
+
+      <!-- Suggestions -->
+      <div class="suggestions-label">Suggested questions</div>
+      <div class="suggestions">
+        <div class="suggestion-item" onclick="setQuestion('Do I need an umbrella today?')">
+          <span>Do I need an umbrella today?</span>
+          <span class="suggestion-chevron">›</span>
+        </div>
+        <div class="suggestion-item" onclick="setQuestion('Will it rain later today?')">
+          <span>Will it rain later today?</span>
+          <span class="suggestion-chevron">›</span>
+        </div>
+        <div class="suggestion-item" onclick="setQuestion('What will the weather be at 6 pm?')">
+          <span>What will the weather be at 6 pm?</span>
+          <span class="suggestion-chevron">›</span>
+        </div>
+      </div>
+
+      <!-- Ask Button -->
+      <button class="ask-button" onclick="askWeather()">
+        <svg class="check-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Ask Weather</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="resultModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Weather Answer</div>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://raoufhamouda.fr/api.php';
+    const OPENWEATHER_API_KEY = 'd4d9209d1da2155a253442e2506b5ee7';
+    let temperatureChart = null;
+
+    // Popular cities database for autocorrect
+    const CITIES = [
+      'Paris', 'London', 'New York', 'Tokyo', 'Berlin', 'Madrid', 'Rome', 'Amsterdam',
+      'Barcelona', 'Vienna', 'Prague', 'Lisbon', 'Dublin', 'Brussels', 'Athens',
+      'Moscow', 'Istanbul', 'Cairo', 'Dubai', 'Singapore', 'Hong Kong', 'Sydney',
+      'Melbourne', 'Toronto', 'Montreal', 'Vancouver', 'Los Angeles', 'San Francisco',
+      'Chicago', 'Miami', 'Boston', 'Seattle', 'Las Vegas', 'Mexico City', 'Buenos Aires',
+      'Rio de Janeiro', 'Sao Paulo', 'Lima', 'Bogota', 'Santiago', 'Tunis', 'Tunisia',
+      'Casablanca', 'Marrakech', 'Algiers', 'Tripoli', 'Lagos', 'Nairobi', 'Cape Town',
+      'Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 'Beijing', 'Shanghai',
+      'Seoul', 'Bangkok', 'Manila', 'Jakarta', 'Kuala Lumpur', 'Hanoi', 'Ho Chi Minh',
+      'Warsaw', 'Budapest', 'Bucharest', 'Sofia', 'Zagreb', 'Zurich', 'Geneva',
+      'Copenhagen', 'Stockholm', 'Oslo', 'Helsinki', 'Reykjavik', 'Edinburgh',
+      'Manchester', 'Liverpool', 'Munich', 'Hamburg', 'Frankfurt', 'Cologne',
+      'Milan', 'Naples', 'Florence', 'Venice', 'Lyon', 'Marseille', 'Nice',
+      'Toulouse', 'Bordeaux', 'Strasbourg', 'Nantes', 'Lille'
+    ];
+
+    // Calculate Levenshtein distance for typo detection
+    function levenshteinDistance(str1, str2) {
+      str1 = str1.toLowerCase();
+      str2 = str2.toLowerCase();
+      
+      const matrix = [];
+      for (let i = 0; i <= str2.length; i++) {
+        matrix[i] = [i];
+      }
+      for (let j = 0; j <= str1.length; j++) {
+        matrix[0][j] = j;
+      }
+      for (let i = 1; i <= str2.length; i++) {
+        for (let j = 1; j <= str1.length; j++) {
+          if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+            matrix[i][j] = matrix[i - 1][j - 1];
+          } else {
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j - 1] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j] + 1
+            );
+          }
+        }
+      }
+      return matrix[str2.length][str1.length];
+    }
+
+    // Find best matching city
+    function findBestMatch(input) {
+      if (!input || input.length < 2) return input;
+      
+      const inputLower = input.toLowerCase().trim();
+      
+      // Exact match (case insensitive)
+      const exactMatch = CITIES.find(city => city.toLowerCase() === inputLower);
+      if (exactMatch) return exactMatch;
+      
+      // Starts with match
+      const startsWithMatch = CITIES.find(city => city.toLowerCase().startsWith(inputLower));
+      if (startsWithMatch) return startsWithMatch;
+      
+      // Find closest match using Levenshtein distance
+      let bestMatch = input;
+      let bestDistance = Infinity;
+      
+      for (const city of CITIES) {
+        const distance = levenshteinDistance(inputLower, city.toLowerCase());
+        // Only suggest if distance is small (typo likely)
+        if (distance < bestDistance && distance <= 3) {
+          bestDistance = distance;
+          bestMatch = city;
+        }
+      }
+      
+      return bestDistance <= 3 ? bestMatch : input;
+    }
+
+    function setQuestion(q) {
+      document.getElementById('questionInput').value = q;
+    }
+
+    async function loadTemperatureChart() {
+      const cityInput = document.getElementById('cityInput');
+      let city = cityInput.value.trim() || 'Paris';
+      
+      // Auto-correct the city name
+      const correctedCity = findBestMatch(city);
+      if (correctedCity !== city) {
+        cityInput.value = correctedCity;
+        city = correctedCity;
+      }
+      
+      document.getElementById('chartCityName').textContent = city;
+      document.getElementById('chartContent').innerHTML = `
+        <div class="chart-loading">
+          <div class="chart-loading-spinner"></div>
+          <div class="chart-loading-text">Loading hourly forecast...</div>
+        </div>
+      `;
+
+      try {
+        // Get coordinates first
+        const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)}&limit=1&appid=${OPENWEATHER_API_KEY}`;
+        const geoResponse = await fetch(geoUrl);
+        const geoData = await geoResponse.json();
+
+        if (!geoData || geoData.length === 0) {
+          throw new Error('City not found');
+        }
+
+        const { lat, lon } = geoData[0];
+
+        // Get hourly forecast
+        const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`;
+        const forecastResponse = await fetch(forecastUrl);
+        const forecastData = await forecastResponse.json();
+
+        if (forecastData.cod !== '200') {
+          throw new Error('Failed to fetch forecast');
+        }
+
+        // Get today's data (next 24 hours)
+        const hourlyData = forecastData.list.slice(0, 8);
+        
+        const temperatures = hourlyData.map(item => Math.round(item.main.temp));
+        const times = hourlyData.map(item => {
+          const date = new Date(item.dt * 1000);
+          return date.getHours().toString().padStart(2, '0') + 'h';
+        });
+        
+        const weatherConditions = hourlyData.map(item => item.weather[0].main);
+        const currentTemp = temperatures[0];
+        const currentCondition = weatherConditions[0];
+
+        // Update current temperature display
+        document.getElementById('currentTempDisplay').innerHTML = `
+          <div class="temp-large">${currentTemp}°</div>
+          <div class="temp-desc">${currentCondition}</div>
+        `;
+
+        // Create chart
+        document.getElementById('chartContent').innerHTML = `
+          <div class="chart-wrapper">
+            <div class="chart-canvas">
+              <canvas id="tempChart"></canvas>
+            </div>
+          </div>
+          <button class="refresh-btn" onclick="loadTemperatureChart()">Refresh</button>
+        `;
+
+        const ctx = document.getElementById('tempChart').getContext('2d');
+        
+        if (temperatureChart) {
+          temperatureChart.destroy();
+        }
+
+        temperatureChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: times,
+            datasets: [{
+              label: 'Temperature',
+              data: temperatures,
+              borderColor: '#60a5fa',
+              backgroundColor: 'rgba(96, 165, 250, 0.2)',
+              borderWidth: 2.5,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 4,
+              pointBackgroundColor: '#60a5fa',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+              pointHoverRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                titleColor: '#1F2937',
+                bodyColor: '#1F2937',
+                borderColor: '#E5E7EB',
+                borderWidth: 1,
+                padding: 12,
+                displayColors: false,
+                callbacks: {
+                  label: function(context) {
+                    return context.parsed.y + '°C';
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: false,
+                ticks: {
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  font: {
+                    size: 10
+                  },
+                  callback: function(value) {
+                    return value + '°';
+                  }
+                },
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.1)',
+                  drawBorder: false
+                }
+              },
+              x: {
+                ticks: {
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  font: {
+                    size: 10
+                  }
+                },
+                grid: {
+                  display: false,
+                  drawBorder: false
+                }
+              }
+            }
+          }
+        });
+
+      } catch (error) {
+        document.getElementById('chartContent').innerHTML = `
+          <div class="chart-loading">
+            <div class="chart-loading-text" style="color: #FCA5A5;">
+              Error: ${error.message}
+            </div>
+            <button class="refresh-btn" onclick="loadTemperatureChart()">Try Again</button>
+          </div>
+        `;
+      }
+    }
+
+    async function askWeather() {
+      const cityInput = document.getElementById('cityInput');
+      let city = cityInput.value.trim();
+      const question = document.getElementById('questionInput').value.trim();
+
+      if (!city) {
+        alert('Please enter a city');
+        return;
+      }
+
+      if (!question) {
+        alert('Please ask a question');
+        return;
+      }
+
+      // Auto-correct the city name
+      const correctedCity = findBestMatch(city);
+      if (correctedCity !== city) {
+        cityInput.value = correctedCity;
+        city = correctedCity;
+      }
+
+      document.getElementById('resultModal').classList.add('active');
+      document.getElementById('modalBody').innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <p class="loading-text">Getting weather and AI answer...</p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            city: city,
+            question: question 
+          })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Unknown error');
+        }
+
+        const w = data.weather;
+        const answer = data.aiResponse;
+
+        document.getElementById('modalBody').innerHTML = `
+          <div class="weather-card">
+            <div class="city-name">${w.city}, ${w.country}</div>
+            <div class="weather-desc">${w.description}</div>
+            <div class="temp-display">${w.temp}°C</div>
+            
+            <div class="weather-details">
+              <div class="detail-item">
+                <div class="detail-label">Feels like</div>
+                <div class="detail-value">${w.feels_like}°C</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Humidity</div>
+                <div class="detail-value">${w.humidity}%</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Wind</div>
+                <div class="detail-value">${w.wind_speed} m/s</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Pressure</div>
+                <div class="detail-value">${w.pressure} hPa</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="answer-card">
+            <div class="answer-title">Answer</div>
+            <div class="answer-text">${answer}</div>
+          </div>
+        `;
+
+      } catch (error) {
+        document.getElementById('modalBody').innerHTML = `
+          <div class="error">
+            ${error.message}<br><br>
+            Make sure XAMPP is running and API keys are configured.
+          </div>
+        `;
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('resultModal').classList.remove('active');
+    }
+
+    document.getElementById('questionInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') askWeather();
+    });
+
+    document.getElementById('cityInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('questionInput').focus();
+      }
+    });
+
+    document.getElementById('resultModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    document.getElementById('cityInput').addEventListener('change', function() {
+      if (this.value.trim()) {
+        loadTemperatureChart();
+      }
+    });
+
+    // City input suggestions
+    const cityInput = document.getElementById('cityInput');
+    const citySuggestions = document.getElementById('citySuggestions');
+
+    cityInput.addEventListener('input', function() {
+      const input = this.value.trim();
+      
+      if (input.length < 2) {
+        citySuggestions.classList.remove('active');
+        citySuggestions.innerHTML = '';
+        return;
+      }
+
+      // Find matching cities
+      const matches = CITIES.filter(city => 
+        city.toLowerCase().startsWith(input.toLowerCase()) ||
+        city.toLowerCase().includes(input.toLowerCase())
+      ).slice(0, 5); // Limit to 5 suggestions
+
+      if (matches.length === 0) {
+        citySuggestions.classList.remove('active');
+        citySuggestions.innerHTML = '';
+        return;
+      }
+
+      // Display suggestions
+      citySuggestions.innerHTML = matches.map(city => 
+        `<div class="city-suggestion-item" onclick="selectCity('${city}')">${city}</div>`
+      ).join('');
+      citySuggestions.classList.add('active');
+    });
+
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!cityInput.contains(e.target) && !citySuggestions.contains(e.target)) {
+        citySuggestions.classList.remove('active');
+      }
+    });
+
+    function selectCity(city) {
+      const cityInput = document.getElementById('cityInput');
+      const citySuggestions = document.getElementById('citySuggestions');
+      cityInput.value = city;
+      citySuggestions.classList.remove('active');
+      citySuggestions.innerHTML = '';
+      loadTemperatureChart();
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      loadTemperatureChart();
+    });
+  </script>
+</body>
+</html>
